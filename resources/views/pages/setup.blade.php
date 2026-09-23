@@ -29,7 +29,7 @@
     <x-letter-section heading="Check before you give">
         <p>Every prompt starts with a self check. If something is missing it stops and tells you what, before claiming anything or spending much. It never installs system software without asking.</p>
 
-        <div x-data="selfCheck({ promptBase: @js(url('prompts')) })" class="mt-6 rounded-lg border-2 border-ink p-5">
+        <div x-data="selfCheck({ promptBase: @js(route('home').'/prompts') })" class="mt-6 rounded-lg border-2 border-ink p-5">
             <fieldset>
                 <legend class="font-bold">I want to check for</legend>
                 <div class="mt-1.5 flex gap-5">

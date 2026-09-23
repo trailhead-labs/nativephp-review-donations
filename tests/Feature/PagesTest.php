@@ -19,3 +19,11 @@ it('renders a page per track', function (string $track) {
 it('returns not found for an unknown track', function () {
     $this->get('/tracks/fix-everything')->assertNotFound();
 });
+
+it('renders every path the static export writes', function () {
+    foreach (config('export.paths') as $path) {
+        $this->get($path)->assertOk();
+    }
+
+    expect(config('export.paths'))->toHaveCount(5 + 4 + 3 + 48);
+});

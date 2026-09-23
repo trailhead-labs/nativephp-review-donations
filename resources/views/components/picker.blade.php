@@ -14,7 +14,7 @@
     ];
 @endphp
 
-<div x-data="picker({ catalog: @js($catalog), promptBase: @js(url('prompts')), track: @js($track) })" class="grid gap-16">
+<div x-data="picker({ catalog: @js($catalog), promptBase: @js(route('home').'/prompts'), track: @js($track) })" class="grid gap-16">
 
     {{-- Tracks: two axes, so the four stamps sit on a labelled grid. --}}
     <fieldset>
@@ -208,7 +208,7 @@
                 <pre class="mt-3 max-h-96 overflow-auto rounded-md bg-paper p-4 font-mono text-[13px] leading-relaxed whitespace-pre-wrap" x-text="preview || 'Loading…'"></pre>
             </details>
 
-            <div x-data="selfCheck({ promptBase: @js(url('prompts')) })" class="mt-4 text-sm">
+            <div x-data="selfCheck({ promptBase: @js(route('home').'/prompts') })" class="mt-4 text-sm">
                 <button type="button" class="underline decoration-red underline-offset-4" @click="copy(track, onDevice ? platformSetting : 'none')">Copy the self check on its own</button>
                 <span x-show="copied" class="ml-1 text-ink-soft">Copied. It claims nothing and posts nothing.</span>
                 <span x-show="failure" class="ml-1 text-red-ink" x-text="failure"></span>

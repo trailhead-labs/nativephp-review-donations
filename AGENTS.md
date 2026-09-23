@@ -1,3 +1,11 @@
+# Review Donations
+
+A static Laravel site where people donate spare AI tokens to NativePHP by copying a prompt into their coding agent. Read these before changing what the site says or what the prompts do:
+
+- [docs/spec.md](docs/spec.md): the decisions behind the tracks, levels, claiming, reporting and the pull request gate, plus open questions.
+- [docs/prompts.md](docs/prompts.md): how the prompts in `resources/views/prompts` are written and tested.
+- [docs/copy.md](docs/copy.md): the site copy, page by page.
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
@@ -7,7 +15,7 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 
 ## Foundational Context
 
-This application is a Laravel application running on PHP 8.5. You are an expert with the Laravel ecosystem. Always use the APIs that match the installed major version of each package — do not assume a version.
+This application is a Laravel application running on PHP 8.4. You are an expert with the Laravel ecosystem. Always use the APIs that match the installed major version of each package — do not assume a version.
 
 Before relying on a package's API, confirm its installed version:
 - PHP packages: run `composer show --direct` to list direct dependencies with versions, or `composer show <vendor/package>` for a single package.
@@ -104,6 +112,16 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 - Laravel can be deployed using [Laravel Cloud](https://cloud.laravel.com/), which is the fastest way to deploy and scale production Laravel applications.
 - Activate the `deploying-to-cloud` skill whenever deploying to Laravel Cloud, configuring Cloud environments or resources, using the Cloud CLI, or troubleshooting Cloud deployments.
+
+=== tests rules ===
+
+# Test Enforcement
+
+- Add or update tests for behavior and logic changes when a test provides meaningful regression coverage.
+- Pure copy, styling, and layout-only changes do not require new or updated tests.
+- When test coverage applies, run the affected tests and ensure they pass.
+- Test the changed behavior and its important failure modes, but do not add tests beyond them.
+- Read the `testing-best-practices` skill before writing tests.
 
 === laravel/core rules ===
 

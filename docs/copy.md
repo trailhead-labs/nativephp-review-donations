@@ -1,6 +1,6 @@
 # Review Donations: site copy
 
-Six pages, all static. Copy follows the spec in `inference-drive-spec/SPEC.md`, rewritten for the name Review Donations and a lighter tone. The visual idea is a letter to the maintainers: the hero is an airmail envelope, the four tracks are postage stamps, copying a prompt postmarks it. The metaphor lives in the visuals and a few lines of flavour, never in button or level names.
+Six pages, all static. Copy follows the [spec](spec.md), rewritten for the name Review Donations and a lighter tone. The visual idea is a letter to the maintainers: the hero is an airmail envelope, the four tracks are postage stamps, copying a prompt postmarks it. The metaphor lives in the visuals and a few lines of flavour, never in button or level names.
 
 ## Header (every page)
 

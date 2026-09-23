@@ -1,21 +1,15 @@
 <?php
 
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
-use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
+/*
+ * A static site has no sessions, cookies or forms, so the routes
+ * skip the web middleware group. That also means no app key and
+ * no database are needed to run it, or to export it to HTML.
+ */
 return Application::configure(basePath: dirname(__DIR__))
-    ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
-        health: '/up',
-    )
-    ->withMiddleware(function (Middleware $middleware): void {
-        //
-    })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
-        );
-    })->create();
+    ->withRouting(using: fn () => Route::group([], base_path('routes/web.php')))
+    ->withMiddleware()
+    ->withExceptions()
+    ->create();

@@ -1,58 +1,42 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Review Donations
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Donate your spare AI tokens to [NativePHP](https://nativephp.com). Pick a task, copy one prompt into Claude Code, Codex or any coding agent, and it gives a real open issue or pull request a first look. The maintainers still decide, they just don't start from scratch.
 
-## About Laravel
+Live at [trailhead-labs.github.io/nativephp-review-donations](https://trailhead-labs.github.io/nativephp-review-donations).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## How it's built
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+A plain Laravel app that never runs as one in production. It is exported to static HTML and served by GitHub Pages. No database, no sessions, no app key.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Where | What |
+|---|---|
+| `resources/views/pages` | The pages |
+| `resources/views/components` | The picker, stamps, envelope and letter layout |
+| `resources/views/prompts` | The prompts your agent runs, one per track and level, with shared partials |
+| `config/donations.php` | Tracks, levels, steps, models per agent and cost estimates |
+| `config/export.php` | Which paths the static export writes |
+| `docs` | The [spec](docs/spec.md), how [prompts](docs/prompts.md) are written, and the [site copy](docs/copy.md) |
 
-## Learning Laravel
+Each prompt is served as plain text for every agent at `/prompts/{agent}/{track}/{level}.txt`. The picker fetches it, fills in the donor's settings and copies it.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Working on it
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer setup   # install everything and build the assets
+composer dev     # php artisan serve and Vite, side by side
+composer test
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+On [Herd](https://herd.laravel.com) skip `php artisan serve` and open the `.test` domain with `npm run dev` running.
 
-## Contributing
+## Publishing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+composer publish
+```
 
-## Code of Conduct
+That formats the code, builds the assets, exports every page and prompt to `dist`, and pushes it to the `gh-pages` branch. GitHub Pages serves that branch.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The site lives on a subpath, so `APP_URL` in the build script carries it and the routes are prefixed with it. If it ever moves to its own domain, change that URL and the `--dist` folder in `composer.json`.
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+After a build, run `npm run dev` or `npm run build` again before working locally. The build points the font URLs at the live site.

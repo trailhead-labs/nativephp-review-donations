@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Response;
 
-class PromptController extends Controller
+class PromptController
 {
     /**
      * Render one track and level's prompt for the given agent.
@@ -46,7 +46,7 @@ class PromptController extends Controller
             ...$data,
             'agent' => $agent,
             'models' => collect(config('donations.roles'))->map(fn (array $role): string => $role['models'][$agent])->all(),
-            'siteUrl' => url('/'),
+            'siteUrl' => route('home'),
             'ledger' => config('donations.ledger'),
         ])->render();
 

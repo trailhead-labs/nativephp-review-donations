@@ -1,34 +1,31 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "trailhead-labs/nativephp-review-donations",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Donate your spare AI tokens to NativePHP. A static Laravel site, exported to GitHub Pages.",
     "keywords": [
-        "laravel",
-        "framework"
+        "nativephp",
+        "open-source",
+        "ai",
+        "static-site"
     ],
     "license": "MIT",
     "require": {
         "php": "^8.3",
         "laravel/framework": "^13.17",
-        "laravel/tinker": "^3.0"
+        "spatie/laravel-export": "^1.5"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.23",
         "laravel/boost": "^2.2",
-        "laravel/pail": "^1.2.5",
         "laravel/pao": "^1.0.6",
         "laravel/pint": "^1.27",
-        "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^5.2",
         "pestphp/pest-plugin-laravel": "^5.0"
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
-            "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "App\\": "app/"
         }
     },
     "autoload-dev": {
@@ -40,34 +37,39 @@
         "setup": [
             "composer install",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
-            "@php artisan key:generate",
-            "@php artisan migrate --force",
-            "npm install --ignore-scripts",
+            "npm install",
             "npm run build"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "@php artisan dev"
+            "npx concurrently -k -n php,vite -c \"#8696ed,#d2343c\" \"php artisan serve\" \"npm run dev\""
         ],
         "test": [
-            "@php artisan config:clear --ansi @no_additional_args",
             "@php artisan test"
+        ],
+        "format": [
+            "vendor/bin/pint"
+        ],
+        "build": [
+            "@putenv APP_ENV=production",
+            "@putenv APP_DEBUG=false",
+            "@putenv APP_URL=https://trailhead-labs.github.io/nativephp-review-donations",
+            "@putenv ASSET_URL=https://trailhead-labs.github.io/nativephp-review-donations",
+            "npm run build",
+            "rm -f public/hot",
+            "@php artisan export"
+        ],
+        "publish": [
+            "@composer run format",
+            "@composer run build",
+            "npx gh-pages --dist=dist/nativephp-review-donations --message=publish --nojekyll"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
             "@php artisan boost:update --ansi"
-        ],
-        "post-root-package-install": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
-        ],
-        "post-create-project-cmd": [
-            "@php artisan key:generate --ansi",
-            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
-            "@php artisan migrate --graceful --ansi"
         ],
         "pre-package-uninstall": [
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"

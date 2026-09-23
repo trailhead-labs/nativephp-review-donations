@@ -1,5 +1,7 @@
 # Review Donations
 
+> Open source runs on small kindnesses. This one fits in your clipboard.
+
 A love letter to [NativePHP](https://nativephp.com), and a way for anyone to add a line to it.
 
 Live at [trailhead-labs.github.io/nativephp-review-donations](https://trailhead-labs.github.io/nativephp-review-donations).
@@ -58,5 +60,3 @@ After a build, run `npm run dev` or `npm run build` again before working locally
 ## Contributing
 
 Better prompts, clearer copy, a fix for something that broke: all welcome. Open an issue or a pull request. The [spec](docs/spec.md) explains the thinking behind the prompts, so that is a good place to start.
-
-Open source runs on small kindnesses. This one fits in your clipboard.

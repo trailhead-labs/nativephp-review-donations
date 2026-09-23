@@ -3,7 +3,192 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+@custom-variant dark (@media (prefers-color-scheme: dark));
+
+/*
+ * Airmail paper, letter sheets and NativePHP ink. Red is the one
+ * action colour; the brand periwinkle only carries the stripes.
+ */
+:root {
+    --paper: #e8ebf6;
+    --sheet: #fcfcfe;
+    --ink: #272d48;
+    --ink-soft: #5a6180;
+    --rule: #cfd3e6;
+    --red: #d2343c;
+    --red-ink: #b3242c;
+    --on-red: #fcfcfe;
+    --blue: #505b93;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --paper: #161a2c;
+        --sheet: #20253b;
+        --ink: #eceef8;
+        --ink-soft: #a6acc9;
+        --rule: #363d5c;
+        --red: #f0646b;
+        --red-ink: #ff8a8f;
+        --on-red: #161a2c;
+        --blue: #8696ed;
+    }
+}
+
+@theme inline {
+    --font-sans: 'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Caprasimo', ui-serif, Georgia, serif;
+    --font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --color-paper: var(--paper);
+    --color-sheet: var(--sheet);
+    --color-ink: var(--ink);
+    --color-ink-soft: var(--ink-soft);
+    --color-rule: var(--rule);
+    --color-red: var(--red);
+    --color-red-ink: var(--red-ink);
+    --color-on-red: var(--on-red);
+    --color-blue: var(--blue);
+}
+
+@layer base {
+    html {
+        -webkit-text-size-adjust: 100%;
+        text-rendering: optimizeLegibility;
+    }
+
+    body {
+        background: var(--paper);
+        color: var(--ink);
+    }
+
+    :focus-visible {
+        outline: 3px solid var(--red);
+        outline-offset: 3px;
+        border-radius: 4px;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+}
+
+@layer components {
+    /*
+     * The red and periwinkle diagonal border of an airmail
+     * envelope, drawn with a border image so it tiles.
+     */
+    .airmail {
+        border: 12px solid transparent;
+        border-image: repeating-linear-gradient(
+                -45deg,
+                var(--red) 0 16px,
+                var(--sheet) 16px 26px,
+                var(--blue) 26px 42px,
+                var(--sheet) 42px 52px
+            )
+            12;
+    }
+
+    .airmail-strip {
+        height: 8px;
+        background: repeating-linear-gradient(
+            -45deg,
+            var(--red) 0 12px,
+            transparent 12px 20px,
+            var(--blue) 20px 32px,
+            transparent 32px 40px
+        );
+    }
+
+    /*
+     * Perforated stamp edges. A row of circles tiles every side
+     * around a solid middle, which reads as torn perforations.
+     */
+    .stamp {
+        --r: 5px;
+        padding: calc(2 * var(--r));
+        background: var(--stamp-paper, var(--sheet));
+        -webkit-mask:
+            linear-gradient(#000 0 0) 50% / calc(100% - 2 * var(--r)) calc(100% - 2 * var(--r)) no-repeat,
+            radial-gradient(farthest-side, #000 98%, #0000) 0 0 / calc(2 * var(--r)) calc(2 * var(--r)) round;
+        mask:
+            linear-gradient(#000 0 0) 50% / calc(100% - 2 * var(--r)) calc(100% - 2 * var(--r)) no-repeat,
+            radial-gradient(farthest-side, #000 98%, #0000) 0 0 / calc(2 * var(--r)) calc(2 * var(--r)) round;
+    }
+
+    .stamp-face {
+        background: var(--stamp-paper, var(--sheet));
+        outline: 1.5px solid color-mix(in oklab, var(--ink) 25%, transparent);
+        outline-offset: -8px;
+    }
+
+    /*
+     * Stamps stuck onto a letter sheet take the paper colour, so
+     * their perforated edge still shows against the sheet.
+     */
+    .airmail,
+    .letter-sheet {
+        --stamp-paper: var(--paper);
+    }
+
+    .prose-letter ul {
+        display: grid;
+        gap: 0.5rem;
+    }
+
+    .prose-letter ul > li {
+        position: relative;
+        padding-left: 1.75rem;
+    }
+
+    .prose-letter ul > li::before {
+        content: '<3';
+        position: absolute;
+        left: 0;
+        font-weight: 700;
+        color: var(--red);
+    }
+
+    .prose-letter p + p {
+        margin-top: 1rem;
+    }
+
+    .prose-letter code {
+        font-family: var(--font-mono);
+        font-size: 0.9em;
+        padding: 0.05em 0.3em;
+        border-radius: 4px;
+        background: color-mix(in oklab, var(--blue) 14%, transparent);
+    }
+}
+
+/*
+ * Copying a prompt cancels it like a letter: the postmark
+ * drops in once. Nothing else on the site moves by itself.
+ */
+@keyframes postmark {
+    0% {
+        opacity: 0;
+        transform: scale(1.6) rotate(-24deg);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(0.94) rotate(-12deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(-12deg);
+    }
+}
+
+.postmark-drop {
+    animation: postmark 420ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .postmark-drop {
+        animation: none;
+        transform: rotate(-12deg);
+    }
 }

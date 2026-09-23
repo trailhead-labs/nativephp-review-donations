@@ -9,8 +9,15 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
             fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
+                bunny('Caprasimo', {
+                    weights: [400],
+                }),
+                bunny('Atkinson Hyperlegible Next', {
+                    weights: [400, 700],
+                    styles: ['normal', 'italic'],
+                }),
+                bunny('Atkinson Hyperlegible Mono', {
+                    weights: [400],
                 }),
             ],
         }),

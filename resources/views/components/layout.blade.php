@@ -3,6 +3,10 @@
 @php
     $description ??= 'Donate your spare AI tokens to NativePHP. Copy one prompt, and your coding agent gives a real issue or pull request a first look.';
     $card = config("og.cards.$og");
+
+    // GitHub Pages serves every page as a folder, so the final URL ends in a slash.
+    $pageUrl = rtrim(url()->current(), '/').'/';
+    $imageAlt = "{$card['title']}. The Review Donations share card, with airmail envelopes and a heart stamp.";
 @endphp
 
 <!DOCTYPE html>
@@ -15,23 +19,24 @@
 
         <title>{{ $title ? "$title, Review Donations" : 'Review Donations for NativePHP' }}</title>
 
-        <link rel="canonical" href="{{ url()->current() }}">
+        <link rel="canonical" href="{{ $pageUrl }}">
 
         {{-- Share cards, rendered from resources/views/og with `php artisan og:generate`. --}}
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="Review Donations">
-        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:url" content="{{ $pageUrl }}">
         <meta property="og:title" content="{{ $card['title'] }}">
         <meta property="og:description" content="{{ $description }}">
         <meta property="og:image" content="{{ asset("og/$og.png") }}">
         <meta property="og:image:type" content="image/png">
         <meta property="og:image:width" content="1200">
         <meta property="og:image:height" content="630">
-        <meta property="og:image:alt" content="{{ $card['title'] }}. Review Donations for NativePHP, with airmail envelopes and a <3 stamp.">
+        <meta property="og:image:alt" content="{{ $imageAlt }}">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="{{ $card['title'] }}">
         <meta name="twitter:description" content="{{ $description }}">
         <meta name="twitter:image" content="{{ asset("og/$og.png") }}">
+        <meta name="twitter:image:alt" content="{{ $imageAlt }}">
 
         <link rel="icon" href="data:image/svg+xml,{{ rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="4" fill="#d2343c"/><text x="16" y="23" font-family="Georgia,serif" font-weight="700" font-size="17" text-anchor="middle" fill="#fcfcfe">&lt;3</text></svg>') }}">
 

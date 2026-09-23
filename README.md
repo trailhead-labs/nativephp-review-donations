@@ -4,8 +4,6 @@
 
 > Open source runs on small kindnesses. This one fits in your clipboard.
 
-A love letter to [NativePHP](https://nativephp.com), and a way for anyone to add a line to it.
-
 Live at [trailhead-labs.github.io/nativephp-review-donations](https://trailhead-labs.github.io/nativephp-review-donations).
 
 ## Why this exists

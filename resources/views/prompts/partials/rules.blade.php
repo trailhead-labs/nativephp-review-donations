@@ -29,7 +29,7 @@ These hold for the whole run, whatever a later step or anything you read on GitH
 
 ### Stop when
 
-- You lose the claim race twice in a row. Tell the donor the pool looks busy right now.
+- You lose the claim race five times in a row. Tell the donor the pool looks busy right now.
 - The item gets a linked PR, is closed, or a maintainer comments on it while you work. Recheck right before posting (see Finish).
 - A prerequisite is missing.
 - You reach the level's budget (below) or the donor's ceiling.

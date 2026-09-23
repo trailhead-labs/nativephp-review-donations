@@ -7,12 +7,12 @@ return [
     | Claims Ledger
     |--------------------------------------------------------------------------
     |
-    | The repo#number of the issue donors' agents claim items on. It
-    | is not decided yet, so prompts say so until it is set here.
+    | The repo#number of the issue donors' agents claim items on. It is
+    | public, and rotated monthly by pointing this at a fresh issue.
     |
     */
 
-    'ledger' => env('DONATIONS_LEDGER', 'not set yet, stop before claiming and tell the donor'),
+    'ledger' => env('DONATIONS_LEDGER', 'trailhead-labs/nativephp-review-donations#1'),
 
     'repository' => 'https://github.com/trailhead-labs/nativephp-review-donations',
 

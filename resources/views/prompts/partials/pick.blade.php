@@ -30,7 +30,7 @@ done
 Drop a candidate if any of these is true. Check with commands, not by reading titles.
 
 1. **Already reported.** A comment on it contains `<!-- review-donations:report` with the same `track=` and a level at or above yours (quick < thorough < deep).
-   `gh api repos/{repo}/issues/{n}/comments --paginate --jq '.[].body' | grep -o '<!-- \[name\]:report[^>]*-->'`
+   `gh api repos/{repo}/issues/{n}/comments --paginate --jq '.[].body' | grep -o '<!-- review-donations:report[^>]*-->'`
 2. **Claimed.** The ledger has an unexpired claim for the same item and track (see Claim).
 3. **Someone is on it.** A comment from a member, owner or collaborator (`author_association` of `MEMBER`, `OWNER` or `COLLABORATOR`) in the last 7 days, unless the item has the label `review-donations-wanted`.
 4. **In flux.** PR tracks: the PR was updated in the last hour.
@@ -46,4 +46,4 @@ Drop a candidate if any of these is true. Check with commands, not by reading ti
 2. Labelled `high-priority`.
 3. Oldest last activity first.
 
-Take the first candidate and go to Claim. If the claim race is lost, take the next.
+Other donors may be starting at the same moment with the same list. So do not always take the first candidate: pick one at random from the first five, and go to Claim. If the claim race is lost, pick at random from the rest of those five, then continue down the list.

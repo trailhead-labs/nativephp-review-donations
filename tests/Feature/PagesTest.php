@@ -30,7 +30,7 @@ it('renders every path the static export writes', function () {
 
 it('gives every page a share card that exists', function (string $uri, string $card) {
     $this->get($uri)
-        ->assertSee('<meta property="og:image" content="'.asset("og/$card.png").'">', false)
+        ->assertSee('<meta property="og:image" content="'.asset("og/$card.png").'?v='.substr(md5_file(public_path("og/$card.png")), 0, 8).'">', false)
         ->assertSee('<meta name="twitter:card" content="summary_large_image">', false)
         ->assertSee('<meta property="og:url" content="'.rtrim(url($uri), '/').'/">', false)
         ->assertDontSee('<3 stamp', false);

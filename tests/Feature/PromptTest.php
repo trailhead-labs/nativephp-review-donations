@@ -35,3 +35,11 @@ it('renders the self check for every agent', function (string $agent) {
 it('returns not found for an unknown agent or level', function (string $uri) {
     $this->get($uri)->assertNotFound();
 })->with(['/prompts/gemini/pr-reason/quick.txt', '/prompts/claude/pr-reason/extreme.txt']);
+
+it('claims on the ledger and spreads a wave of donors across candidates', function () {
+    expect($this->get('/prompts/claude/issue-reason/quick.txt')->getContent())
+        ->toContain('LEDGER            = trailhead-labs/nativephp-review-donations#1')
+        ->toContain('pick one at random from the first five')
+        ->toContain("grep -o '<!-- review-donations:report")
+        ->not->toContain('[name]');
+});

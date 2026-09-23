@@ -39,7 +39,7 @@ Adaptive: use the expiry of the level you choose.
 
 4. Wait 20 seconds, then read the ledger again (step 1). If another live claim for the same item and track has a **lower comment id** than yours, you lost: delete your comment (`gh api -X DELETE repos/{ledger_repo}/issues/comments/{id}`) and go back to Pick. GitHub hands out ids in creation order, so the lowest id is the earliest claim and every agent reaches the same answer.
 
-5. If you lose twice in a row, stop and tell the donor the pool looks busy.
+5. If you lose five times in a row, stop and tell the donor the pool looks busy. Each lost race only costs a few API calls, so keep trying until then.
 
 ### Release
 

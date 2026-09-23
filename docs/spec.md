@@ -93,12 +93,13 @@ Then the prompt filters:
 - Device tracks skip items whose platform the donor cannot run (iOS needs macOS).
 - Issue tracks prefer `bug` and `needs testing`, and skip feature requests and questions.
 - Order: `review-donations-wanted` first, then `high-priority`, then oldest last activity.
+- Take one of the first five at random, not the first. A wave of donors starting together would otherwise all race for the same item.
 
 A donor may name a specific item. The rules and the claim still apply.
 
 ### Claims without a database
 
-Claims are comments on one ledger issue in this repository, set as `DONATIONS_LEDGER`. Donors need no permissions to comment on a public issue, and NativePHP's own threads only ever get finished reports.
+Claims are comments on one ledger issue in this repository, [#1](https://github.com/trailhead-labs/nativephp-review-donations/issues/1), set in `config/donations.php`. Donors need no permissions to comment on a public issue, and NativePHP's own threads only ever get finished reports.
 
 ```
 <!-- review-donations:claim v1 state=live repo=NativePHP/mobile-air item=489 track=issue-reason level=thorough donor=@someone expires=2026-09-23T18:40:00Z -->
@@ -126,7 +127,7 @@ Different tracks may work the same item at the same time. Same track, one at a t
 
 **May not**: push to a branch it did not create; approve or request changes on a PR; label, close, assign, lock or edit anything it did not write; change versions, tags, changelogs or dependency constraints (it may suggest them); deploy to a physical device; use real signing credentials; install system software without the donor's consent; post secrets or paths containing the donor's username; mention anyone but the donor; post before showing the donor, unless the donor chose to post without asking.
 
-**Stops when**: it loses the claim race twice in a row; the item gets a linked PR, is closed, or a maintainer comments while it works; a prerequisite is missing; the level's budget runs out; it needs credentials; it cannot reproduce within its attempts (still worth a "could not reproduce, here is what I tried" report); two of its own findings contradict and a further measurement cannot settle it.
+**Stops when**: it loses the claim race five times in a row; the item gets a linked PR, is closed, or a maintainer comments while it works; a prerequisite is missing; the level's budget runs out; it needs credentials; it cannot reproduce within its attempts (still worth a "could not reproduce, here is what I tried" report); two of its own findings contradict and a further measurement cannot settle it.
 
 At most three reports per donor per day across the pool.
 
@@ -183,16 +184,15 @@ Other agents get the single session version: phases run in order, each writes it
 ## Open questions
 
 1. **Maintainer buy in.** Opt out (everything in the pool unless skipped) or opt in (only items labelled wanted), and the final label names.
-2. **Ledger.** Create the ledger issue and set `DONATIONS_LEDGER`. Until then every prompt stops before claiming.
-3. **Codex.** Verify how Codex spawns helpers today and its model ids.
-4. **Cost calibration.** Run each of the 16 prompts once on a real item, record tokens and time per agent, and replace the estimates.
-5. **Prices.** Per model prices for the money range.
-6. **Post mode default.** Show me first (current) or post without asking. Unattended would need a stricter self review.
-7. **Draft or ready PRs.** Draft today.
-8. **Repo scope.** mobile-air and mobile-ui only, or also desktop and first party plugins.
-9. **Corrected skills.** The fixed plugin-dev skills exist only locally. Publishing them lets prompts reference one source; until then `native-facts` inlines the verified contracts.
-10. **Credit format.** `@handle` pings the donor on every report. Linking the profile instead would not.
-11. **Screenshots.** Evidence branch on the donor's fork, or text only.
-12. **Live numbers.** The home page could show issues waiting, runs in progress and reports posted, fetched at build time from GitHub search and the ledger. Needs a scheduled rebuild.
-13. **Physical devices.** A hard no today. Some bugs only show on hardware, so maybe an opt-in track later.
-14. **Numbers to confirm.** Level names, claim expiry per level, three reports per donor per day, the 7 day "someone is on it" window, and the reproduction attempt budgets. Each is one edit in the partials.
+2. **Codex.** Verify how Codex spawns helpers today and its model ids.
+3. **Cost calibration.** Run each of the 16 prompts once on a real item, record tokens and time per agent, and replace the estimates.
+4. **Prices.** Per model prices for the money range.
+5. **Post mode default.** Show me first (current) or post without asking. Unattended would need a stricter self review.
+6. **Draft or ready PRs.** Draft today.
+7. **Repo scope.** mobile-air and mobile-ui only, or also desktop and first party plugins.
+8. **Corrected skills.** The fixed plugin-dev skills exist only locally. Publishing them lets prompts reference one source; until then `native-facts` inlines the verified contracts.
+9. **Credit format.** `@handle` pings the donor on every report. Linking the profile instead would not.
+10. **Screenshots.** Evidence branch on the donor's fork, or text only.
+11. **Live numbers.** The home page could show issues waiting, runs in progress and reports posted, fetched at build time from GitHub search and the ledger. Needs a scheduled rebuild.
+12. **Physical devices.** A hard no today. Some bugs only show on hardware, so maybe an opt-in track later.
+13. **Numbers to confirm.** Level names, claim expiry per level, three reports per donor per day, the 7 day "someone is on it" window, and the reproduction attempt budgets. Each is one edit in the partials.

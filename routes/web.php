@@ -34,3 +34,13 @@ Route::prefix(config('export.base_path'))->group(function () use ($agents, $trac
         ->whereIn('level', $levels)
         ->name('prompts.show');
 });
+
+/*
+ * Share card templates, rendered to PNG by `php artisan og:generate`.
+ * They exist for local rendering only and never reach the export.
+ */
+if (! app()->isProduction()) {
+    Route::view('/og/{card}', 'og.card')
+        ->whereIn('card', array_keys(config('og.cards')))
+        ->name('og.card');
+}

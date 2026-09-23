@@ -1,4 +1,4 @@
-<x-letter title="How it works" intro="Your agent gives one issue or pull request a careful first look, shows you what it found, and posts it when you say so.">
+<x-letter og="how-it-works" title="How it works" intro="Your agent gives one issue or pull request a careful first look, shows you what it found, and posts it when you say so.">
     <x-letter-section heading="What your agent does">
         <p>It finds one open item that fits your track and that nobody else is working on. It leaves a short claim so two donors never work the same thing, does the work in a folder on your machine, and writes up what it found. It shows you the write up before anything is posted. When you say go, it posts one comment and releases its claim.</p>
     </x-letter-section>

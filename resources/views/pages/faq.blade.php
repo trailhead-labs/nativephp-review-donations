@@ -1,4 +1,4 @@
-<x-letter title="Questions">
+<x-letter og="faq" title="Questions">
     @foreach ([
         'What does it cost me?' => 'Every prompt shows its models and a rough token range before you copy. Quick levels are a small slice of a subscription window. Deep device runs can use most of a day\'s allowance.',
         'Can I cap it?' => 'Pick a level, or use Adaptive with a ceiling. It sizes the work to the item and never goes over.',

@@ -1,6 +1,6 @@
-@props(['title', 'intro' => null])
+@props(['title', 'intro' => null, 'og'])
 
-<x-layout :title="$title">
+<x-layout :title="$title" :description="$intro" :og="$og">
     <div class="mx-auto max-w-4xl px-4 sm:px-6">
         <article class="letter-sheet mt-4 overflow-hidden rounded-sm bg-sheet shadow-[0_18px_40px_-24px_rgb(39_45_72/0.45)]">
             <div class="airmail-strip"></div>

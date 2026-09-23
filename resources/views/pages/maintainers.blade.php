@@ -1,4 +1,4 @@
-<x-letter title="For the NativePHP team" intro="Community members donate their agents' time to give your open issues and pull requests a first look. Here is what reaches you and how to steer it.">
+<x-letter og="maintainers" title="For the NativePHP team" intro="Community members donate their agents' time to give your open issues and pull requests a first look. Here is what reaches you and how to steer it.">
     <x-letter-section heading="A head start, not a handover">
         <p>The point is that you don't start from zero on an issue or a pull request. Nothing here decides anything for you, and nobody expects you to merge what an agent wrote.</p>
     </x-letter-section>

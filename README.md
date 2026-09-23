@@ -1,5 +1,7 @@
 # Review Donations
 
+![Review Donations: put your spare AI tokens to work on NativePHP](public/og/home.png)
+
 > Open source runs on small kindnesses. This one fits in your clipboard.
 
 A love letter to [NativePHP](https://nativephp.com), and a way for anyone to add a line to it.
@@ -56,6 +58,17 @@ That formats the code, builds the assets, exports every page and prompt to `dist
 The site lives on a subpath, so `APP_URL` in the build script carries it and the routes are prefixed with it. If it ever moves to its own domain, change that URL and the `--dist` folder in `composer.json`.
 
 After a build, run `npm run dev` or `npm run build` again before working locally. The build points the font URLs at the live site.
+
+## Share cards
+
+Every page has its own share card in `public/og`, rendered from `resources/views/og/card.blade.php` over the illustration in `resources/images/og-art.webp`. After changing a page title or adding a page, update `config/og.php` and render them again with the site running:
+
+```bash
+npm run build
+php artisan og:generate
+```
+
+It uses headless Chrome. Set `CHROME_PATH` if yours lives somewhere else.
 
 ## Contributing
 

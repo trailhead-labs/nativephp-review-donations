@@ -1,4 +1,9 @@
-@props(['title' => null, 'description' => 'Donate your spare AI tokens to NativePHP. Copy one prompt, and your coding agent gives a real issue or pull request a first look.'])
+@props(['title' => null, 'description' => null, 'og' => 'home'])
+
+@php
+    $description ??= 'Donate your spare AI tokens to NativePHP. Copy one prompt, and your coding agent gives a real issue or pull request a first look.';
+    $card = config("og.cards.$og");
+@endphp
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,6 +14,24 @@
         <meta name="color-scheme" content="light dark">
 
         <title>{{ $title ? "$title, Review Donations" : 'Review Donations for NativePHP' }}</title>
+
+        <link rel="canonical" href="{{ url()->current() }}">
+
+        {{-- Share cards, rendered from resources/views/og with `php artisan og:generate`. --}}
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Review Donations">
+        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:title" content="{{ $card['title'] }}">
+        <meta property="og:description" content="{{ $description }}">
+        <meta property="og:image" content="{{ asset("og/$og.png") }}">
+        <meta property="og:image:type" content="image/png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="{{ $card['title'] }}. Review Donations, a love letter to NativePHP.">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ $card['title'] }}">
+        <meta name="twitter:description" content="{{ $description }}">
+        <meta name="twitter:image" content="{{ asset("og/$og.png") }}">
 
         <link rel="icon" href="data:image/svg+xml,{{ rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="4" fill="#d2343c"/><text x="16" y="23" font-family="Georgia,serif" font-weight="700" font-size="17" text-anchor="middle" fill="#fcfcfe">&lt;3</text></svg>') }}">
 
@@ -38,6 +61,7 @@
                 <div class="max-w-[46ch]">
                     <p class="font-display text-2xl leading-snug">Open source runs on small kindnesses. This one fits in your clipboard.</p>
                     <p class="mt-4 text-sm text-ink-soft">Not affiliated with any AI vendor. Run by the NativePHP community.</p>
+                    <x-trailhead class="mt-5" />
                 </div>
 
                 <nav aria-label="More about Review Donations">

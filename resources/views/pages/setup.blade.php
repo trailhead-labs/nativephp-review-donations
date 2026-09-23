@@ -1,4 +1,4 @@
-<x-letter title="Set up your machine" intro="The reading tracks need the basics. The device tracks build real apps, so they need a mobile toolchain too.">
+<x-letter og="setup" title="Set up your machine" intro="The reading tracks need the basics. The device tracks build real apps, so they need a mobile toolchain too.">
     <x-letter-section heading="Every track">
         <ul>
             <li><code>git</code> and the GitHub CLI, logged in with <code>gh auth login</code>. Your agent uses your account to read, fork and comment.</li>

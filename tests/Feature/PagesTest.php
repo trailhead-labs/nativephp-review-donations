@@ -27,3 +27,26 @@ it('renders every path the static export writes', function () {
 
     expect(config('export.paths'))->toHaveCount(5 + 4 + 3 + 48);
 });
+
+it('gives every page a share card that exists', function (string $uri, string $card) {
+    $this->get($uri)
+        ->assertSee('<meta property="og:image" content="'.asset("og/$card.png").'">', false)
+        ->assertSee('<meta name="twitter:card" content="summary_large_image">', false);
+
+    expect(public_path("og/$card.png"))->toBeFile();
+})->with([
+    'home' => ['/', 'home'],
+    'how it works' => ['/how-it-works', 'how-it-works'],
+    'setup' => ['/setup', 'setup'],
+    'maintainers' => ['/maintainers', 'maintainers'],
+    'faq' => ['/faq', 'faq'],
+    'a track' => ['/tracks/pr-prove', 'tracks-pr-prove'],
+]);
+
+it('renders every share card template', function () {
+    foreach (array_keys(config('og.cards')) as $card) {
+        $this->get("/og/$card")->assertOk()->assertSee(config("og.cards.$card.title"));
+
+        expect(public_path("og/$card.png"))->toBeFile();
+    }
+});

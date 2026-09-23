@@ -27,7 +27,7 @@
         <meta property="og:image:type" content="image/png">
         <meta property="og:image:width" content="1200">
         <meta property="og:image:height" content="630">
-        <meta property="og:image:alt" content="{{ $card['title'] }}. Review Donations, a love letter to NativePHP.">
+        <meta property="og:image:alt" content="{{ $card['title'] }}. Review Donations for NativePHP, with airmail envelopes and a <3 stamp.">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="{{ $card['title'] }}">
         <meta name="twitter:description" content="{{ $description }}">
@@ -69,6 +69,7 @@
                         @foreach (['how-it-works' => 'How it works', 'setup' => 'Set up your machine', 'maintainers' => 'For maintainers', 'faq' => 'Questions'] as $name => $label)
                             <li><a class="underline decoration-rule underline-offset-4 hover:text-ink hover:decoration-red" href="{{ route($name) }}">{{ $label }}</a></li>
                         @endforeach
+                        <li><a class="underline decoration-rule underline-offset-4 hover:text-ink hover:decoration-red" href="{{ config('donations.repository') }}" target="_blank" rel="noopener">Contribute on GitHub</a></li>
                     </ul>
                 </nav>
             </div>

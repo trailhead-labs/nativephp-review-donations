@@ -51,7 +51,7 @@
                         </div>
 
                         <x-postmark x-show="track === '{{ $key }}'" x-cloak label="Picked with care" top="for" bottom="you"
-                                    class="postmark-drop absolute -right-4 -bottom-6 w-36 text-red opacity-90" />
+                                    class="postmark-drop absolute right-0 -bottom-6 w-36 text-red opacity-90 sm:-right-4" />
                     </label>
                 @endforeach
             @endforeach

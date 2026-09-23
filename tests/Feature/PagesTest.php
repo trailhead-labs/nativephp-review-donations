@@ -50,3 +50,7 @@ it('renders every share card template', function () {
         expect(public_path("og/$card.png"))->toBeFile();
     }
 });
+
+it('links to the repository for contributors', function () {
+    $this->get('/')->assertSee('href="https://github.com/trailhead-labs/nativephp-review-donations"', false);
+});

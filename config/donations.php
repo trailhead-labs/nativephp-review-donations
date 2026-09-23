@@ -14,6 +14,8 @@ return [
 
     'ledger' => env('DONATIONS_LEDGER', 'not set yet, stop before claiming and tell the donor'),
 
+    'repository' => 'https://github.com/trailhead-labs/nativephp-review-donations',
+
     /*
     |--------------------------------------------------------------------------
     | Agents

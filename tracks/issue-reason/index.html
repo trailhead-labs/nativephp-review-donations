@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Your agent reads an open issue, the whole thread and the code it touches, then explains what is going on, where, and what would fix it. No emulators needed. It only picks issues nobody has opened a pull request for yet.">
+        <meta name="color-scheme" content="light dark">
+
+        <title>Diagnose an issue, Review Donations</title>
+
+        <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%224%22%20fill%3D%22%23d2343c%22%2F%3E%3Ctext%20x%3D%2216%22%20y%3D%2223%22%20font-family%3D%22Georgia%2Cserif%22%20font-weight%3D%22700%22%20font-size%3D%2217%22%20text-anchor%3D%22middle%22%20fill%3D%22%23fcfcfe%22%3E%26lt%3B3%3C%2Ftext%3E%3C%2Fsvg%3E">
+
+        <style>
+@font-face {
+  font-family: "Caprasimo";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://trailhead-labs.github.io/nativephp-review-donations/build/assets/caprasimo-400-normal-u3avbpQ7.woff2") format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: "Caprasimo";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://trailhead-labs.github.io/nativephp-review-donations/build/assets/caprasimo-400-normal-CPOhBPz8.woff") format("woff");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://trailhead-labs.github.io/nativephp-review-donations/build/assets/atkinson-hyperlegible-next-400-italic-DZBmTazM.woff2") format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://trailhead-labs.github.io/nativephp-review-donations/build/assets/atkinson-hyperlegible-next-400-italic-C-uEjDrs.woff") format("woff");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("https://trailhead-labs.github.io/nativephp-review-donations/build/assets/atkinson-hyperlegible-next-700-italic-ByvmSGPy.woff2") format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("https://trailhead-labs.github.io/nativephp-review-donations/build/assets/atkinson-hyperlegible-next-700-italic-DbbrSpud.woff") format("woff");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://trailhead-labs.github.io/nativephp-review-donations/build/assets/atkinson-hyperlegible-next-400-normal-FfmJh7DR.woff2") format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://trailhead-labs.github.io/nativephp-review-donations/build/assets/atkinson-hyperlegible-next-400-normal-DPp7N0cD.woff") format("woff");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("https://trailhead-labs.github.io/nativephp-review-donations/build/assets/atkinson-hyperlegible-next-700-normal-Dpiyiu63.woff2") format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("https://trailhead-labs.github.io/nativephp-review-donations/build/assets/atkinson-hyperlegible-next-700-normal-C2qZD_Q9.woff") format("woff");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://trailhead-labs.github.io/nativephp-review-donations/build/assets/atkinson-hyperlegible-mono-400-normal-CmMGer93.woff2") format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://trailhead-labs.github.io/nativephp-review-donations/build/assets/atkinson-hyperlegible-mono-400-normal-Cmjm2dBj.woff") format("woff");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+:root {
+  --font-caprasimo: "Caprasimo";
+  --font-atkinson-hyperlegible-next: "Atkinson Hyperlegible Next";
+  --font-atkinson-hyperlegible-mono: "Atkinson Hyperlegible Mono";
+}
+
+.font-caprasimo {
+  font-family: var(--font-caprasimo);
+}
+
+.font-atkinson-hyperlegible-next {
+  font-family: var(--font-atkinson-hyperlegible-next);
+}
+
+.font-atkinson-hyperlegible-mono {
+  font-family: var(--font-atkinson-hyperlegible-mono);
+}
+</style>        <link rel="preload" as="style" href="https://trailhead-labs.github.io/nativephp-review-donations/build/assets/app-DF86qKsu.css" /><link rel="modulepreload" as="script" href="https://trailhead-labs.github.io/nativephp-review-donations/build/assets/app-C61MnPeu.js" /><link rel="stylesheet" href="https://trailhead-labs.github.io/nativephp-review-donations/build/assets/app-DF86qKsu.css" /><script type="module" src="https://trailhead-labs.github.io/nativephp-review-donations/build/assets/app-C61MnPeu.js"></script>    </head>
+    <body class="min-h-screen font-sans text-[17px] leading-relaxed antialiased">
+        <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:bg-sheet focus:px-3 focus:py-2">Skip to content</a>
+
+        <header class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-5 sm:px-6">
+            <a href="https://trailhead-labs.github.io/nativephp-review-donations" class="group flex items-center gap-3">
+                <div class="shrink-0 drop-shadow-[0_3px_2px_rgb(39_45_72/0.22)] w-9 -rotate-6 transition-transform group-hover:rotate-0" aria-hidden="true">
+    <div class="stamp">
+                    <div class="grid aspect-[4/5] place-items-center bg-red">
+                <span class="font-display text-[0.8rem] leading-none text-on-red">&lt;3</span>
+            </div>
+            </div>
+</div>
+                <span class="font-display text-xl sm:text-2xl">Review Donations</span>
+            </a>
+
+            <fieldset x-data class="flex items-center gap-3">
+    <legend class="sr-only">Which coding agent do you use?</legend>
+
+    <span aria-hidden="true" class="hidden text-sm text-ink-soft sm:inline">My agent</span>
+
+    <div class="flex rounded-full border-2 border-ink p-0.5">
+                    <label class="cursor-pointer">
+                <input type="radio" name="agent" value="claude" class="peer sr-only" checked                       :checked="$store.agent.current === 'claude'"
+                       @change="$store.agent.choose('claude')">
+                <span class="block rounded-full px-3 py-1 text-sm font-bold transition-colors peer-checked:bg-ink peer-checked:text-sheet peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-red">Claude Code</span>
+            </label>
+                    <label class="cursor-pointer">
+                <input type="radio" name="agent" value="codex" class="peer sr-only"                        :checked="$store.agent.current === 'codex'"
+                       @change="$store.agent.choose('codex')">
+                <span class="block rounded-full px-3 py-1 text-sm font-bold transition-colors peer-checked:bg-ink peer-checked:text-sheet peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-red">Codex</span>
+            </label>
+                    <label class="cursor-pointer">
+                <input type="radio" name="agent" value="other" class="peer sr-only"                        :checked="$store.agent.current === 'other'"
+                       @change="$store.agent.choose('other')">
+                <span class="block rounded-full px-3 py-1 text-sm font-bold transition-colors peer-checked:bg-ink peer-checked:text-sheet peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-red">Other</span>
+            </label>
+            </div>
+</fieldset>
+        </header>
+
+        <main id="main">
+            <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <div class="mt-4 max-w-[62ch]">
+            <h1 class="font-display text-5xl leading-tight sm:text-6xl">Diagnose an issue</h1>
+            <p class="mt-5 text-lg">Your agent reads an open issue, the whole thread and the code it touches, then explains what is going on, where, and what would fix it. No emulators needed. It only picks issues nobody has opened a pull request for yet.</p>
+        </div>
+
+        <section class="mt-16">
+            <div x-data="picker({ catalog: JSON.parse('{\u0022agents\u0022:{\u0022claude\u0022:{\u0022name\u0022:\u0022Claude Code\u0022,\u0022paste\u0022:\u0022Paste it into Claude Code started in an empty folder.\u0022,\u0022caveat\u0022:null},\u0022codex\u0022:{\u0022name\u0022:\u0022Codex\u0022,\u0022paste\u0022:\u0022Paste it into codex started in an empty folder.\u0022,\u0022caveat\u0022:\u0022Codex runs helpers as separate codex exec sessions. This part is not tested yet.\u0022},\u0022other\u0022:{\u0022name\u0022:\u0022Other\u0022,\u0022paste\u0022:\u0022Paste it into your agent, started in an empty folder.\u0022,\u0022caveat\u0022:\u0022Other agents run every step in one session, so the independent checks are less independent.\u0022}},\u0022roles\u0022:{\u0022lead\u0022:{\u0022job\u0022:\u0022The session you paste into. Picks, claims, orchestrates and writes the report.\u0022,\u0022models\u0022:{\u0022claude\u0022:\u0022Opus 5.5\u0022,\u0022codex\u0022:\u0022OpenAI flagship, high effort\u0022,\u0022other\u0022:\u0022Your main model\u0022}},\u0022analyst\u0022:{\u0022job\u0022:\u0022Diagnoses, fixes, scrutinises, simplifies and reviews. The strongest reasoning you have.\u0022,\u0022models\u0022:{\u0022claude\u0022:\u0022Fable 5.1\u0022,\u0022codex\u0022:\u0022OpenAI flagship, high effort\u0022,\u0022other\u0022:\u0022Your strongest model\u0022}},\u0022planner\u0022:{\u0022job\u0022:\u0022Writes the plan for the simulator run, then reads what the driver saw.\u0022,\u0022models\u0022:{\u0022claude\u0022:\u0022Opus 5.5\u0022,\u0022codex\u0022:\u0022OpenAI flagship, medium effort\u0022,\u0022other\u0022:\u0022Your strongest model\u0022}},\u0022driver\u0022:{\u0022job\u0022:\u0022Follows the plan on the emulator or simulator and writes down what it saw. Never diagnoses.\u0022,\u0022models\u0022:{\u0022claude\u0022:\u0022Sonnet 5\u0022,\u0022codex\u0022:\u0022OpenAI coding model, low effort\u0022,\u0022other\u0022:\u0022Your fastest model\u0022}},\u0022scout\u0022:{\u0022job\u0022:\u0022Lists and filters candidate items and greps big logs. Cheap and fast.\u0022,\u0022models\u0022:{\u0022claude\u0022:\u0022Haiku 4.5\u0022,\u0022codex\u0022:\u0022OpenAI small model\u0022,\u0022other\u0022:\u0022Your fastest model\u0022}},\u0022as chosen\u0022:{\u0022job\u0022:\u0022Whichever models the chosen level uses.\u0022,\u0022models\u0022:{\u0022claude\u0022:\u0022As chosen\u0022,\u0022codex\u0022:\u0022As chosen\u0022,\u0022other\u0022:\u0022As chosen\u0022}}},\u0022tracks\u0022:{\u0022issue-reason\u0022:{\u0022name\u0022:\u0022Diagnose an issue\u0022,\u0022subject\u0022:\u0022issue\u0022,\u0022device\u0022:false,\u0022blurb\u0022:\u0022Read an open issue and the code behind it, then explain what is going on.\u0022,\u0022intro\u0022:\u0022Your agent reads an open issue, the whole thread and the code it touches, then explains what is going on, where, and what would fix it. No emulators needed. It only picks issues nobody has opened a pull request for yet.\u0022},\u0022issue-prove\u0022:{\u0022name\u0022:\u0022Reproduce an issue\u0022,\u0022subject\u0022:\u0022issue\u0022,\u0022device\u0022:true,\u0022blurb\u0022:\u0022Make a reported bug happen on an emulator or simulator, with screenshots and logs.\u0022,\u0022intro\u0022:\u0022Your agent reproduces an open issue on an Android emulator or iOS simulator and reports what it saw, with screenshots and logs. Deeper levels also build a fix and prove it on the same device.\u0022},\u0022pr-reason\u0022:{\u0022name\u0022:\u0022Review a pull request\u0022,\u0022subject\u0022:\u0022pr\u0022,\u0022device\u0022:false,\u0022blurb\u0022:\u0022Read a pull request against its issue, run the tests, and write a review.\u0022,\u0022intro\u0022:\u0022Your agent reads an open pull request against the issue it fixes and the code around it, runs the tests, and posts a review the author can act on. No emulators needed.\u0022},\u0022pr-prove\u0022:{\u0022name\u0022:\u0022Test a pull request\u0022,\u0022subject\u0022:\u0022pr\u0022,\u0022device\u0022:true,\u0022blurb\u0022:\u0022Build a pull request on a device, check the bug is gone and nothing nearby broke.\u0022,\u0022intro\u0022:\u0022Your agent builds the pull request on an emulator or simulator, checks the bug is gone, and looks for anything the change broke nearby.\u0022}},\u0022prompts\u0022:{\u0022issue-reason\u0022:{\u0022quick\u0022:{\u0022summary\u0022:\u0022Read one open issue and the code it touches, and post a diagnosis marked as reasoned.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim an issue\u0022,\u0022lead\u0022],[\u0022Read the issue, thread and the code it points at\u0022,\u0022lead\u0022],[\u0022Diagnose\u0022,\u0022lead\u0022],[\u0022Draft, show you, post\u0022,\u0022lead\u0022]],\u0022skips\u0022:[\u0022following external links\u0022,\u0022version and already-fixed checks\u0022,\u0022duplicate search\u0022,\u0022tests\u0022,\u0022any fix or PR\u0022],\u0022tokens\u0022:\u002260k to 150k\u0022,\u0022time\u0022:\u00225 to 15 min\u0022,\u0022weight\u0022:[1,1],\u0022opens_pr\u0022:\u0022never\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022,\u0022PHP 8.4\u0022,\u0022Composer\u0022]},\u0022thorough\u0022:{\u0022summary\u0022:\u0022Read the whole story, including linked repositories and version history, diagnose, have a fresh helper try to break the diagnosis, and propose a fix. Opens a draft PR only for PHP only fixes that pass the gate.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim an issue\u0022,\u0022scout\u0022,true],[\u0022Read everything, follow every link, check versions\u0022,\u0022lead\u0022],[\u0022Clone, install, baseline\u0022,\u0022lead\u0022],[\u0022Diagnose\u0022,\u0022lead\u0022],[\u0022Try to break the diagnosis\u0022,\u0022analyst\u0022,true],[\u0022Fix and test (PHP only fixes)\u0022,\u0022lead\u0022],[\u0022Review the fix\u0022,\u0022analyst\u0022,true],[\u0022Draft, show you, post (and PR on your yes)\u0022,\u0022lead\u0022]],\u0022skips\u0022:[\u0022parallel competing diagnoses\u0022,\u0022simplify pass\u0022,\u0022device verification\u0022],\u0022tokens\u0022:\u0022250k to 600k\u0022,\u0022time\u0022:\u002220 to 40 min\u0022,\u0022weight\u0022:[2,2],\u0022opens_pr\u0022:\u0022PHP only fixes, draft, after your yes\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022,\u0022PHP 8.4\u0022,\u0022Composer\u0022]},\u0022deep\u0022:{\u0022summary\u0022:\u0022Two independent diagnoses compared, each claim re-verified, a test that encodes the bug, a fix scrutinised and simplified by fresh helpers. Opens a draft PR only for PHP only fixes that pass the gate.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim an issue\u0022,\u0022scout\u0022,true],[\u0022Read everything, follow every link, check versions\u0022,\u0022lead\u0022],[\u0022Clone, install, baseline\u0022,\u0022lead\u0022],[\u0022Diagnosis A\u0022,\u0022analyst\u0022,true],[\u0022Diagnosis B\u0022,\u0022analyst\u0022,true],[\u0022Reconcile\u0022,\u0022lead\u0022],[\u0022Falsify the reconciled diagnosis\u0022,\u0022analyst\u0022,true],[\u0022Write the failing test and the fix\u0022,\u0022analyst\u0022,true],[\u0022Scrutinise the fix\u0022,\u0022analyst\u0022,true],[\u0022Simplify the fix\u0022,\u0022analyst\u0022,true],[\u0022Gate, draft, show you, post (and PR on your yes)\u0022,\u0022lead\u0022]],\u0022skips\u0022:[\u0022device verification\u0022],\u0022tokens\u0022:\u00220.8M to 2M\u0022,\u0022time\u0022:\u002245 to 90 min\u0022,\u0022weight\u0022:[3,3],\u0022opens_pr\u0022:\u0022PHP only fixes, draft, after your yes\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022,\u0022PHP 8.4\u0022,\u0022Composer\u0022]},\u0022adaptive\u0022:{\u0022summary\u0022:\u0022Reads the issue first, scores how hard it is, and runs Quick, Thorough or Deep accordingly, never above your ceiling.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim an issue\u0022,\u0022scout\u0022,true],[\u0022Size the work and tell you\u0022,\u0022lead\u0022],[\u0022Run the chosen level\u0022,\u0022as chosen\u0022]],\u0022skips\u0022:[\u0022whatever the chosen level skips\u0022],\u0022tokens\u0022:\u002260k to your ceiling\u0022,\u0022time\u0022:\u00225 to 90 min\u0022,\u0022weight\u0022:[1,3],\u0022opens_pr\u0022:\u0022as the chosen level allows\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022,\u0022PHP 8.4\u0022,\u0022Composer\u0022]}},\u0022issue-prove\u0022:{\u0022quick\u0022:{\u0022summary\u0022:\u0022Reproduce one open issue on the platform it was reported on, with screenshots and logs. No fix.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim an issue for your platform\u0022,\u0022lead\u0022],[\u0022Read the issue and linked code\u0022,\u0022lead\u0022],[\u0022Build the host app and a probe\u0022,\u0022lead\u0022],[\u0022Reproduce on the reported platform\u0022,\u0022lead\u0022],[\u0022Draft, show you, post\u0022,\u0022lead\u0022]],\u0022skips\u0022:[\u0022second platform\u0022,\u0022diagnosis beyond what the repro shows\u0022,\u0022any fix or PR\u0022,\u0022regression checks\u0022],\u0022tokens\u0022:\u0022300k to 800k\u0022,\u0022time\u0022:\u002230 to 60 min\u0022,\u0022weight\u0022:[2,2],\u0022opens_pr\u0022:\u0022never\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022,\u0022PHP 8.4\u0022,\u0022Composer\u0022,\u0022Android emulator or iOS simulator (macOS)\u0022,\u002230 GB free\u0022]},\u0022thorough\u0022:{\u0022summary\u0022:\u0022Reproduce on both platforms, diagnose, fix, and prove the fix on the same devices. Opens a draft PR on your yes when the gate is met.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim an issue\u0022,\u0022scout\u0022,true],[\u0022Read everything, follow every link, check versions\u0022,\u0022lead\u0022],[\u0022Clone, install, baseline, host app\u0022,\u0022lead\u0022],[\u0022Reproduce before, each platform\u0022,\u0022lead\u0022],[\u0022Diagnose\u0022,\u0022lead\u0022],[\u0022Fix\u0022,\u0022lead\u0022],[\u0022Verify after, each platform\u0022,\u0022lead\u0022],[\u0022Review the fix\u0022,\u0022analyst\u0022,true],[\u0022Gate, draft, show you, post (and PR on your yes)\u0022,\u0022lead\u0022]],\u0022skips\u0022:[\u0022plan and drive split for device work\u0022,\u0022separate fix and simplify helpers\u0022,\u0022wider regression sweep\u0022],\u0022tokens\u0022:\u00221M to 2.5M\u0022,\u0022time\u0022:\u00221 to 2 hours\u0022,\u0022weight\u0022:[3,3],\u0022opens_pr\u0022:\u0022yes, draft, after your yes, when the gate is met\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022,\u0022PHP 8.4\u0022,\u0022Composer\u0022,\u0022Android emulator and\\\/or iOS simulator (macOS)\u0022,\u002230 to 40 GB free\u0022]},\u0022deep\u0022:{\u0022summary\u0022:\u0022The full workflow. Device work split into plan, drive and analyse; fix, scrutiny and simplification by fresh strong helpers; before and after on both platforms; a regression sweep of every path that shares the changed code. Opens a draft PR on your yes when the gate is met.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim an issue\u0022,\u0022scout\u0022,true],[\u0022Read everything, follow every link, check versions\u0022,\u0022lead\u0022],[\u0022Clone, install, baseline, host app\u0022,\u0022lead\u0022],[\u0022Plan the reproduction\u0022,\u0022planner\u0022,true],[\u0022Drive it, each platform\u0022,\u0022driver\u0022,true],[\u0022Analyse and diagnose\u0022,\u0022planner\u0022],[\u0022Fix\u0022,\u0022analyst\u0022,true],[\u0022Plan and drive the after run, each platform\u0022,\u0022driver\u0022,true],[\u0022Scrutinise the fix\u0022,\u0022analyst\u0022,true],[\u0022Simplify the fix\u0022,\u0022analyst\u0022,true],[\u0022Regression sweep\u0022,\u0022driver\u0022,true],[\u0022Gate, draft, show you, post (and PR on your yes)\u0022,\u0022lead\u0022]],\u0022skips\u0022:[],\u0022tokens\u0022:\u00222.5M to 6M\u0022,\u0022time\u0022:\u00222 to 4 hours\u0022,\u0022weight\u0022:[4,4],\u0022opens_pr\u0022:\u0022yes, draft, after your yes, when the gate is met\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022,\u0022PHP 8.4\u0022,\u0022Composer\u0022,\u0022Android emulator and iOS simulator (macOS) recommended\u0022,\u002240 GB free\u0022,\u0022machine kept awake\u0022]},\u0022adaptive\u0022:{\u0022summary\u0022:\u0022Reads the issue first, scores how hard it is, and runs Quick, Thorough or Deep accordingly, never above your ceiling or beyond the platforms you can run.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim an issue for your platforms\u0022,\u0022scout\u0022,true],[\u0022Size the work and tell you\u0022,\u0022lead\u0022],[\u0022Run the chosen level\u0022,\u0022as chosen\u0022]],\u0022skips\u0022:[\u0022whatever the chosen level skips\u0022],\u0022tokens\u0022:\u0022300k to your ceiling\u0022,\u0022time\u0022:\u002230 min to 4 hours\u0022,\u0022weight\u0022:[2,4],\u0022opens_pr\u0022:\u0022as the chosen level allows\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022,\u0022PHP 8.4\u0022,\u0022Composer\u0022,\u0022Android emulator and\\\/or iOS simulator (macOS)\u0022,\u002230 to 40 GB free\u0022]}},\u0022pr-reason\u0022:{\u0022quick\u0022:{\u0022summary\u0022:\u0022Read one open PR against the issue it fixes, and post a short review of whether it does and anything obviously wrong.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim a PR\u0022,\u0022lead\u0022],[\u0022Read the PR, its issue and the diff\u0022,\u0022lead\u0022],[\u0022Review\u0022,\u0022lead\u0022],[\u0022Draft, show you, post\u0022,\u0022lead\u0022]],\u0022skips\u0022:[\u0022running tests\u0022,\u0022base comparison\u0022,\u0022overlapping PR search\u0022,\u0022reading every caller\u0022,\u0022suggested fixes beyond one liners\u0022],\u0022tokens\u0022:\u002280k to 200k\u0022,\u0022time\u0022:\u00225 to 15 min\u0022,\u0022weight\u0022:[1,1],\u0022opens_pr\u0022:\u0022never\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022]},\u0022thorough\u0022:{\u0022summary\u0022:\u0022Check out the PR, run its tests against the base and the head, trace every caller, compare suite, formatter and static analysis to the base, and post a review with suggested fixes.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim a PR\u0022,\u0022scout\u0022,true],[\u0022Read everything, follow every link, find overlapping work\u0022,\u0022lead\u0022],[\u0022Check out, install, baseline on the base branch\u0022,\u0022lead\u0022],[\u0022Review on all angles\u0022,\u0022lead\u0022],[\u0022Prove the tests\u0022,\u0022lead\u0022],[\u0022Independent review\u0022,\u0022analyst\u0022,true],[\u0022Reconcile, draft, show you, post\u0022,\u0022lead\u0022]],\u0022skips\u0022:[\u0022parallel reviewers per angle\u0022,\u0022per finding falsification\u0022,\u0022device verification\u0022],\u0022tokens\u0022:\u0022300k to 700k\u0022,\u0022time\u0022:\u002220 to 45 min\u0022,\u0022weight\u0022:[2,2],\u0022opens_pr\u0022:\u0022never\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022,\u0022PHP 8.4\u0022,\u0022Composer\u0022]},\u0022deep\u0022:{\u0022summary\u0022:\u0022Parallel reviewers, one per angle, each finding independently falsified before it is kept, tests proven against the base, suggested fixes applied and tested locally.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim a PR\u0022,\u0022scout\u0022,true],[\u0022Read everything, follow every link, find overlapping work\u0022,\u0022lead\u0022],[\u0022Check out, install, baseline on the base branch\u0022,\u0022lead\u0022],[\u0022Correctness review\u0022,\u0022analyst\u0022,true],[\u0022Blast radius review\u0022,\u0022analyst\u0022,true],[\u0022Tests and compatibility review\u0022,\u0022analyst\u0022,true],[\u0022Simplification review\u0022,\u0022analyst\u0022,true],[\u0022Falsify each finding\u0022,\u0022analyst\u0022,true],[\u0022Verify suggested fixes under tests\u0022,\u0022lead\u0022],[\u0022Draft, show you, post\u0022,\u0022lead\u0022]],\u0022skips\u0022:[\u0022device verification\u0022],\u0022tokens\u0022:\u00221M to 2.5M\u0022,\u0022time\u0022:\u002245 to 90 min\u0022,\u0022weight\u0022:[3,3],\u0022opens_pr\u0022:\u0022never\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022,\u0022PHP 8.4\u0022,\u0022Composer\u0022]},\u0022adaptive\u0022:{\u0022summary\u0022:\u0022Reads the PR first, scores how big and risky it is, and runs Quick, Thorough or Deep accordingly, never above your ceiling.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim a PR\u0022,\u0022scout\u0022,true],[\u0022Size the work and tell you\u0022,\u0022lead\u0022],[\u0022Run the chosen level\u0022,\u0022as chosen\u0022]],\u0022skips\u0022:[\u0022whatever the chosen level skips\u0022],\u0022tokens\u0022:\u002280k to your ceiling\u0022,\u0022time\u0022:\u00225 to 90 min\u0022,\u0022weight\u0022:[1,3],\u0022opens_pr\u0022:\u0022never\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022,\u0022PHP 8.4\u0022,\u0022Composer\u0022]}},\u0022pr-prove\u0022:{\u0022quick\u0022:{\u0022summary\u0022:\u0022Build one open PR on the platform it targets, run its issue\\u0027s reproduction, and confirm the bug is gone.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim a PR for your platform\u0022,\u0022lead\u0022],[\u0022Read the PR and its issue\u0022,\u0022lead\u0022],[\u0022Build the PR head in a host app\u0022,\u0022lead\u0022],[\u0022Run the issue\\u0027s reproduction\u0022,\u0022lead\u0022],[\u0022Draft, show you, post\u0022,\u0022lead\u0022]],\u0022skips\u0022:[\u0022running the app without the pull request first\u0022,\u0022second platform\u0022,\u0022regression checks\u0022,\u0022code review\u0022],\u0022tokens\u0022:\u0022400k to 1M\u0022,\u0022time\u0022:\u002230 to 60 min\u0022,\u0022weight\u0022:[2,2],\u0022opens_pr\u0022:\u0022never\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022,\u0022PHP 8.4\u0022,\u0022Composer\u0022,\u0022Android emulator or iOS simulator (macOS)\u0022,\u002230 GB free\u0022]},\u0022thorough\u0022:{\u0022summary\u0022:\u0022Build the base and the PR on both platforms, show the bug before and gone after, check the behaviour next to it, and build companion PRs together.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim a PR\u0022,\u0022scout\u0022,true],[\u0022Read everything, follow every link\u0022,\u0022lead\u0022],[\u0022Clones, host app, baseline\u0022,\u0022lead\u0022],[\u0022Before, on the base, each platform\u0022,\u0022lead\u0022],[\u0022After, on the PR head, each platform\u0022,\u0022lead\u0022],[\u0022Adjacent behaviour\u0022,\u0022lead\u0022],[\u0022Check the PR\\u0027s own claims and review points\u0022,\u0022lead\u0022],[\u0022Draft, show you, post\u0022,\u0022lead\u0022]],\u0022skips\u0022:[\u0022plan and drive split\u0022,\u0022per finding falsification\u0022,\u0022full regression sweep\u0022],\u0022tokens\u0022:\u00221.2M to 3M\u0022,\u0022time\u0022:\u00221 to 2 hours\u0022,\u0022weight\u0022:[3,3],\u0022opens_pr\u0022:\u0022never\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022,\u0022PHP 8.4\u0022,\u0022Composer\u0022,\u0022Android emulator and\\\/or iOS simulator (macOS)\u0022,\u002230 to 40 GB free\u0022]},\u0022deep\u0022:{\u0022summary\u0022:\u0022The full workflow. Device work split into plan, drive and analyse; before and after on both platforms; every claim and review point verified on device; suggested fixes tried on device before they are suggested; companion PRs and merge order checked; a regression sweep of every path that shares the change.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim a PR\u0022,\u0022scout\u0022,true],[\u0022Read everything, follow every link\u0022,\u0022lead\u0022],[\u0022Clones, host app, baseline\u0022,\u0022lead\u0022],[\u0022Code review for what to test\u0022,\u0022analyst\u0022,true],[\u0022Plan the before and after runs\u0022,\u0022planner\u0022,true],[\u0022Drive the base, each platform\u0022,\u0022driver\u0022,true],[\u0022Drive the head, each platform\u0022,\u0022driver\u0022,true],[\u0022Analyse\u0022,\u0022planner\u0022],[\u0022Verify each finding on device\u0022,\u0022driver\u0022,true],[\u0022Try suggested fixes on device\u0022,\u0022analyst\u0022,true],[\u0022Regression sweep\u0022,\u0022driver\u0022,true],[\u0022Draft, show you, post\u0022,\u0022lead\u0022]],\u0022skips\u0022:[],\u0022tokens\u0022:\u00223M to 7M\u0022,\u0022time\u0022:\u00222 to 4 hours\u0022,\u0022weight\u0022:[5,5],\u0022opens_pr\u0022:\u0022never\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022,\u0022PHP 8.4\u0022,\u0022Composer\u0022,\u0022Android emulator and iOS simulator (macOS) recommended\u0022,\u002240 GB free\u0022,\u0022machine kept awake\u0022]},\u0022adaptive\u0022:{\u0022summary\u0022:\u0022Reads the PR first, scores how big and risky it is, and runs Quick, Thorough or Deep accordingly, never above your ceiling or beyond the platforms you can run.\u0022,\u0022steps\u0022:[[\u0022Self check\u0022,\u0022lead\u0022],[\u0022Pick and claim a PR for your platforms\u0022,\u0022scout\u0022,true],[\u0022Size the work and tell you\u0022,\u0022lead\u0022],[\u0022Run the chosen level\u0022,\u0022as chosen\u0022]],\u0022skips\u0022:[\u0022whatever the chosen level skips\u0022],\u0022tokens\u0022:\u0022400k to your ceiling\u0022,\u0022time\u0022:\u002230 min to 4 hours\u0022,\u0022weight\u0022:[2,5],\u0022opens_pr\u0022:\u0022never\u0022,\u0022requires\u0022:[\u0022git\u0022,\u0022gh (logged in)\u0022,\u0022PHP 8.4\u0022,\u0022Composer\u0022,\u0022Android emulator and\\\/or iOS simulator (macOS)\u0022,\u002230 to 40 GB free\u0022]}}}}'), promptBase: 'https:\/\/trailhead-labs.github.io\/nativephp-review-donations\/prompts', track: 'issue-reason' })" class="grid gap-16">
+
+    
+    <fieldset>
+        <legend class="font-display text-3xl sm:text-4xl">What would you like to give?</legend>
+
+        <div class="mt-8 grid gap-5 md:grid-cols-[auto_1fr_1fr] md:gap-x-6 md:gap-y-5">
+            <div class="hidden md:block"></div>
+                            <p class="hidden self-end pl-2 font-bold text-ink-soft md:block">Read the code</p>
+                            <p class="hidden self-end pl-2 font-bold text-ink-soft md:block">Run it on a device</p>
+            
+                            <p class="hidden self-center pr-2 text-right font-bold text-ink-soft md:block">An issue</p>
+
+                                    <label class="group relative block cursor-pointer transition-[translate,rotate,filter] duration-200 hover:-translate-y-0.5 has-checked:-rotate-1"
+                           :class="track === 'issue-reason' ? 'drop-shadow-[0_8px_8px_rgb(39_45_72/0.25)]' : 'drop-shadow-[0_2px_2px_rgb(39_45_72/0.16)]'">
+                        <input type="radio" name="track" value="issue-reason" class="sr-only" x-model="track" @change="choose('issue-reason')">
+
+                        <div class="stamp h-full">
+                            <div class="stamp-face flex h-full flex-col gap-3 p-6 group-has-checked:outline-2 group-has-checked:outline-red group-has-focus-visible:outline-3 group-has-focus-visible:outline-red sm:p-7">
+                                <div class="flex items-start justify-between gap-4">
+                                    <h3 class="font-display text-2xl leading-tight sm:text-[1.75rem]">Diagnose an issue</h3>
+                                    <span class="shrink-0 text-right leading-none">
+                                        <span class="block font-display text-2xl text-red">60k</span>
+                                        <span class="text-xs text-ink-soft">tokens and up</span>
+                                    </span>
+                                </div>
+
+                                <p class="text-ink-soft">Read an open issue and the code behind it, then explain what is going on.</p>
+
+                                <p class="mt-auto text-sm font-bold text-blue">No emulator needed</p>
+                            </div>
+                        </div>
+
+                        <svg class="pointer-events-none postmark-drop absolute -right-4 -bottom-6 w-36 text-red opacity-90" x-show="track === 'issue-reason'" x-cloak="x-cloak" viewBox="0 0 260 120" fill="none" aria-hidden="true">
+    <defs>
+        <path id="postmark-ring" d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0" />
+    </defs>
+    <g stroke="currentColor" stroke-width="2.5">
+        <circle cx="60" cy="60" r="56" />
+        <circle cx="60" cy="60" r="32" />
+    </g>
+    <g stroke="currentColor" stroke-width="2.5" stroke-opacity="1">
+                    <path d="M126 36 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 50 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 64 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 78 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 92 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+            </g>
+    <text fill="currentColor" font-size="11.5" font-weight="700" letter-spacing="2.4" class="font-sans uppercase">
+        <textPath href="#postmark-ring" startOffset="0">Picked with care</textPath>
+    </text>
+    <text x="60" y="58" fill="currentColor" font-size="13" font-weight="700" text-anchor="middle" class="font-sans">for</text>
+    <text x="60" y="74" fill="currentColor" font-size="13" font-weight="700" text-anchor="middle" class="font-sans">you</text>
+</svg>
+                    </label>
+                                    <label class="group relative block cursor-pointer transition-[translate,rotate,filter] duration-200 hover:-translate-y-0.5 has-checked:-rotate-1"
+                           :class="track === 'issue-prove' ? 'drop-shadow-[0_8px_8px_rgb(39_45_72/0.25)]' : 'drop-shadow-[0_2px_2px_rgb(39_45_72/0.16)]'">
+                        <input type="radio" name="track" value="issue-prove" class="sr-only" x-model="track" @change="choose('issue-prove')">
+
+                        <div class="stamp h-full">
+                            <div class="stamp-face flex h-full flex-col gap-3 p-6 group-has-checked:outline-2 group-has-checked:outline-red group-has-focus-visible:outline-3 group-has-focus-visible:outline-red sm:p-7">
+                                <div class="flex items-start justify-between gap-4">
+                                    <h3 class="font-display text-2xl leading-tight sm:text-[1.75rem]">Reproduce an issue</h3>
+                                    <span class="shrink-0 text-right leading-none">
+                                        <span class="block font-display text-2xl text-red">300k</span>
+                                        <span class="text-xs text-ink-soft">tokens and up</span>
+                                    </span>
+                                </div>
+
+                                <p class="text-ink-soft">Make a reported bug happen on an emulator or simulator, with screenshots and logs.</p>
+
+                                <p class="mt-auto text-sm font-bold text-blue">Needs a mobile build setup</p>
+                            </div>
+                        </div>
+
+                        <svg class="pointer-events-none postmark-drop absolute -right-4 -bottom-6 w-36 text-red opacity-90" x-show="track === 'issue-prove'" x-cloak="x-cloak" viewBox="0 0 260 120" fill="none" aria-hidden="true">
+    <defs>
+        <path id="postmark-ring" d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0" />
+    </defs>
+    <g stroke="currentColor" stroke-width="2.5">
+        <circle cx="60" cy="60" r="56" />
+        <circle cx="60" cy="60" r="32" />
+    </g>
+    <g stroke="currentColor" stroke-width="2.5" stroke-opacity="1">
+                    <path d="M126 36 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 50 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 64 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 78 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 92 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+            </g>
+    <text fill="currentColor" font-size="11.5" font-weight="700" letter-spacing="2.4" class="font-sans uppercase">
+        <textPath href="#postmark-ring" startOffset="0">Picked with care</textPath>
+    </text>
+    <text x="60" y="58" fill="currentColor" font-size="13" font-weight="700" text-anchor="middle" class="font-sans">for</text>
+    <text x="60" y="74" fill="currentColor" font-size="13" font-weight="700" text-anchor="middle" class="font-sans">you</text>
+</svg>
+                    </label>
+                                            <p class="hidden self-center pr-2 text-right font-bold text-ink-soft md:block">A pull request</p>
+
+                                    <label class="group relative block cursor-pointer transition-[translate,rotate,filter] duration-200 hover:-translate-y-0.5 has-checked:-rotate-1"
+                           :class="track === 'pr-reason' ? 'drop-shadow-[0_8px_8px_rgb(39_45_72/0.25)]' : 'drop-shadow-[0_2px_2px_rgb(39_45_72/0.16)]'">
+                        <input type="radio" name="track" value="pr-reason" class="sr-only" x-model="track" @change="choose('pr-reason')">
+
+                        <div class="stamp h-full">
+                            <div class="stamp-face flex h-full flex-col gap-3 p-6 group-has-checked:outline-2 group-has-checked:outline-red group-has-focus-visible:outline-3 group-has-focus-visible:outline-red sm:p-7">
+                                <div class="flex items-start justify-between gap-4">
+                                    <h3 class="font-display text-2xl leading-tight sm:text-[1.75rem]">Review a pull request</h3>
+                                    <span class="shrink-0 text-right leading-none">
+                                        <span class="block font-display text-2xl text-red">80k</span>
+                                        <span class="text-xs text-ink-soft">tokens and up</span>
+                                    </span>
+                                </div>
+
+                                <p class="text-ink-soft">Read a pull request against its issue, run the tests, and write a review.</p>
+
+                                <p class="mt-auto text-sm font-bold text-blue">No emulator needed</p>
+                            </div>
+                        </div>
+
+                        <svg class="pointer-events-none postmark-drop absolute -right-4 -bottom-6 w-36 text-red opacity-90" x-show="track === 'pr-reason'" x-cloak="x-cloak" viewBox="0 0 260 120" fill="none" aria-hidden="true">
+    <defs>
+        <path id="postmark-ring" d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0" />
+    </defs>
+    <g stroke="currentColor" stroke-width="2.5">
+        <circle cx="60" cy="60" r="56" />
+        <circle cx="60" cy="60" r="32" />
+    </g>
+    <g stroke="currentColor" stroke-width="2.5" stroke-opacity="1">
+                    <path d="M126 36 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 50 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 64 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 78 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 92 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+            </g>
+    <text fill="currentColor" font-size="11.5" font-weight="700" letter-spacing="2.4" class="font-sans uppercase">
+        <textPath href="#postmark-ring" startOffset="0">Picked with care</textPath>
+    </text>
+    <text x="60" y="58" fill="currentColor" font-size="13" font-weight="700" text-anchor="middle" class="font-sans">for</text>
+    <text x="60" y="74" fill="currentColor" font-size="13" font-weight="700" text-anchor="middle" class="font-sans">you</text>
+</svg>
+                    </label>
+                                    <label class="group relative block cursor-pointer transition-[translate,rotate,filter] duration-200 hover:-translate-y-0.5 has-checked:-rotate-1"
+                           :class="track === 'pr-prove' ? 'drop-shadow-[0_8px_8px_rgb(39_45_72/0.25)]' : 'drop-shadow-[0_2px_2px_rgb(39_45_72/0.16)]'">
+                        <input type="radio" name="track" value="pr-prove" class="sr-only" x-model="track" @change="choose('pr-prove')">
+
+                        <div class="stamp h-full">
+                            <div class="stamp-face flex h-full flex-col gap-3 p-6 group-has-checked:outline-2 group-has-checked:outline-red group-has-focus-visible:outline-3 group-has-focus-visible:outline-red sm:p-7">
+                                <div class="flex items-start justify-between gap-4">
+                                    <h3 class="font-display text-2xl leading-tight sm:text-[1.75rem]">Test a pull request</h3>
+                                    <span class="shrink-0 text-right leading-none">
+                                        <span class="block font-display text-2xl text-red">400k</span>
+                                        <span class="text-xs text-ink-soft">tokens and up</span>
+                                    </span>
+                                </div>
+
+                                <p class="text-ink-soft">Build a pull request on a device, check the bug is gone and nothing nearby broke.</p>
+
+                                <p class="mt-auto text-sm font-bold text-blue">Needs a mobile build setup</p>
+                            </div>
+                        </div>
+
+                        <svg class="pointer-events-none postmark-drop absolute -right-4 -bottom-6 w-36 text-red opacity-90" x-show="track === 'pr-prove'" x-cloak="x-cloak" viewBox="0 0 260 120" fill="none" aria-hidden="true">
+    <defs>
+        <path id="postmark-ring" d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0" />
+    </defs>
+    <g stroke="currentColor" stroke-width="2.5">
+        <circle cx="60" cy="60" r="56" />
+        <circle cx="60" cy="60" r="32" />
+    </g>
+    <g stroke="currentColor" stroke-width="2.5" stroke-opacity="1">
+                    <path d="M126 36 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 50 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 64 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 78 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 92 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+            </g>
+    <text fill="currentColor" font-size="11.5" font-weight="700" letter-spacing="2.4" class="font-sans uppercase">
+        <textPath href="#postmark-ring" startOffset="0">Picked with care</textPath>
+    </text>
+    <text x="60" y="58" fill="currentColor" font-size="13" font-weight="700" text-anchor="middle" class="font-sans">for</text>
+    <text x="60" y="74" fill="currentColor" font-size="13" font-weight="700" text-anchor="middle" class="font-sans">you</text>
+</svg>
+                    </label>
+                                    </div>
+    </fieldset>
+
+    
+    <fieldset x-show="track" x-cloak x-ref="levels" class="scroll-mt-6">
+        <legend class="font-display text-3xl sm:text-4xl">How much would you like to give?</legend>
+
+        <div class="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
+                            <label class="cursor-pointer">
+                    <input type="radio" name="level" value="quick" class="peer sr-only" x-model="level">
+
+                    <div class="flex h-full flex-col gap-2 rounded-lg border-2 border-rule bg-sheet p-4 transition-colors peer-checked:border-red peer-checked:shadow-[inset_0_0_0_1px_var(--red)] peer-focus-visible:outline-3 peer-focus-visible:outline-offset-3 peer-focus-visible:outline-red hover:border-ink/50">
+                        <span class="text-lg font-bold">Quick</span>
+                        <span class="text-sm leading-snug text-ink-soft">One agent, one focused pass.</span>
+
+                        <span class="mt-auto flex gap-1 pt-2">
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('quick', 1) === 'full',
+                                          'bg-red/30': track && weight('quick', 1) === 'range',
+                                          'bg-rule': track && weight('quick', 1) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('quick', 2) === 'full',
+                                          'bg-red/30': track && weight('quick', 2) === 'range',
+                                          'bg-rule': track && weight('quick', 2) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('quick', 3) === 'full',
+                                          'bg-red/30': track && weight('quick', 3) === 'range',
+                                          'bg-rule': track && weight('quick', 3) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('quick', 4) === 'full',
+                                          'bg-red/30': track && weight('quick', 4) === 'range',
+                                          'bg-rule': track && weight('quick', 4) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('quick', 5) === 'full',
+                                          'bg-red/30': track && weight('quick', 5) === 'range',
+                                          'bg-rule': track && weight('quick', 5) === 'empty',
+                                      }"></span>
+                                                        <span class="sr-only" x-text="track && `Costs about ${catalog.prompts[track]['quick'].tokens} tokens`"></span>
+                        </span>
+                    </div>
+                </label>
+                            <label class="cursor-pointer">
+                    <input type="radio" name="level" value="thorough" class="peer sr-only" x-model="level">
+
+                    <div class="flex h-full flex-col gap-2 rounded-lg border-2 border-rule bg-sheet p-4 transition-colors peer-checked:border-red peer-checked:shadow-[inset_0_0_0_1px_var(--red)] peer-focus-visible:outline-3 peer-focus-visible:outline-offset-3 peer-focus-visible:outline-red hover:border-ink/50">
+                        <span class="text-lg font-bold">Thorough</span>
+                        <span class="text-sm leading-snug text-ink-soft">The full workflow with one independent check.</span>
+
+                        <span class="mt-auto flex gap-1 pt-2">
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('thorough', 1) === 'full',
+                                          'bg-red/30': track && weight('thorough', 1) === 'range',
+                                          'bg-rule': track && weight('thorough', 1) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('thorough', 2) === 'full',
+                                          'bg-red/30': track && weight('thorough', 2) === 'range',
+                                          'bg-rule': track && weight('thorough', 2) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('thorough', 3) === 'full',
+                                          'bg-red/30': track && weight('thorough', 3) === 'range',
+                                          'bg-rule': track && weight('thorough', 3) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('thorough', 4) === 'full',
+                                          'bg-red/30': track && weight('thorough', 4) === 'range',
+                                          'bg-rule': track && weight('thorough', 4) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('thorough', 5) === 'full',
+                                          'bg-red/30': track && weight('thorough', 5) === 'range',
+                                          'bg-rule': track && weight('thorough', 5) === 'empty',
+                                      }"></span>
+                                                        <span class="sr-only" x-text="track && `Costs about ${catalog.prompts[track]['thorough'].tokens} tokens`"></span>
+                        </span>
+                    </div>
+                </label>
+                            <label class="cursor-pointer">
+                    <input type="radio" name="level" value="deep" class="peer sr-only" x-model="level">
+
+                    <div class="flex h-full flex-col gap-2 rounded-lg border-2 border-rule bg-sheet p-4 transition-colors peer-checked:border-red peer-checked:shadow-[inset_0_0_0_1px_var(--red)] peer-focus-visible:outline-3 peer-focus-visible:outline-offset-3 peer-focus-visible:outline-red hover:border-ink/50">
+                        <span class="text-lg font-bold">Deep</span>
+                        <span class="text-sm leading-snug text-ink-soft">Fresh helpers for every job, every finding checked twice.</span>
+
+                        <span class="mt-auto flex gap-1 pt-2">
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('deep', 1) === 'full',
+                                          'bg-red/30': track && weight('deep', 1) === 'range',
+                                          'bg-rule': track && weight('deep', 1) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('deep', 2) === 'full',
+                                          'bg-red/30': track && weight('deep', 2) === 'range',
+                                          'bg-rule': track && weight('deep', 2) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('deep', 3) === 'full',
+                                          'bg-red/30': track && weight('deep', 3) === 'range',
+                                          'bg-rule': track && weight('deep', 3) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('deep', 4) === 'full',
+                                          'bg-red/30': track && weight('deep', 4) === 'range',
+                                          'bg-rule': track && weight('deep', 4) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('deep', 5) === 'full',
+                                          'bg-red/30': track && weight('deep', 5) === 'range',
+                                          'bg-rule': track && weight('deep', 5) === 'empty',
+                                      }"></span>
+                                                        <span class="sr-only" x-text="track && `Costs about ${catalog.prompts[track]['deep'].tokens} tokens`"></span>
+                        </span>
+                    </div>
+                </label>
+                            <label class="cursor-pointer">
+                    <input type="radio" name="level" value="adaptive" class="peer sr-only" x-model="level">
+
+                    <div class="flex h-full flex-col gap-2 rounded-lg border-2 border-rule bg-sheet p-4 transition-colors peer-checked:border-red peer-checked:shadow-[inset_0_0_0_1px_var(--red)] peer-focus-visible:outline-3 peer-focus-visible:outline-offset-3 peer-focus-visible:outline-red hover:border-ink/50">
+                        <span class="text-lg font-bold">Adaptive</span>
+                        <span class="text-sm leading-snug text-ink-soft">Sizes itself to the item, up to a ceiling you set.</span>
+
+                        <span class="mt-auto flex gap-1 pt-2">
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('adaptive', 1) === 'full',
+                                          'bg-red/30': track && weight('adaptive', 1) === 'range',
+                                          'bg-rule': track && weight('adaptive', 1) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('adaptive', 2) === 'full',
+                                          'bg-red/30': track && weight('adaptive', 2) === 'range',
+                                          'bg-rule': track && weight('adaptive', 2) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('adaptive', 3) === 'full',
+                                          'bg-red/30': track && weight('adaptive', 3) === 'range',
+                                          'bg-rule': track && weight('adaptive', 3) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('adaptive', 4) === 'full',
+                                          'bg-red/30': track && weight('adaptive', 4) === 'range',
+                                          'bg-rule': track && weight('adaptive', 4) === 'empty',
+                                      }"></span>
+                                                            <span class="size-3 rounded-[2px]"
+                                      :class="{
+                                          'bg-red': track && weight('adaptive', 5) === 'full',
+                                          'bg-red/30': track && weight('adaptive', 5) === 'range',
+                                          'bg-rule': track && weight('adaptive', 5) === 'empty',
+                                      }"></span>
+                                                        <span class="sr-only" x-text="track && `Costs about ${catalog.prompts[track]['adaptive'].tokens} tokens`"></span>
+                        </span>
+                    </div>
+                </label>
+                    </div>
+    </fieldset>
+
+    
+    <section x-show="track" x-cloak class="grid items-start gap-6 lg:grid-cols-[1.25fr_1fr]" aria-live="polite">
+
+        <div class="rounded-lg bg-sheet p-6 sm:p-8">
+            <h2 class="font-display text-2xl">What your agent does</h2>
+            <p class="mt-3 max-w-[60ch] text-ink-soft" x-text="prompt?.summary"></p>
+
+            <ol class="mt-6 grid">
+                <template x-for="(step, index) in prompt?.steps ?? []" :key="index">
+                    <li class="grid grid-cols-[2rem_1fr] gap-x-2 border-t border-rule py-3 first:border-t-0">
+                        <span class="font-display text-lg leading-7 text-red" x-text="index + 1"></span>
+                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                            <span class="leading-7" x-text="step[0]"></span>
+                            <span class="inline-flex flex-wrap gap-1.5">
+                                <span class="cursor-help rounded-full bg-ink/8 px-2.5 py-0.5 text-sm font-bold" :title="job(step[1])" x-text="model(step[1])"></span>
+                                <span x-show="step[2]" class="rounded-full border border-blue px-2.5 py-0.5 text-sm text-blue" title="A helper that starts with a clean context, so it checks the work without the lead's assumptions">Fresh eyes</span>
+                            </span>
+                        </div>
+                    </li>
+                </template>
+            </ol>
+
+            <div x-show="prompt?.skips.length" class="mt-6 border-t-2 border-dashed border-rule pt-5">
+                <h3 class="font-bold">Skips at this level</h3>
+                <p class="mt-1 text-ink-soft first-letter:uppercase" x-text="prompt?.skips.join(', ')"></p>
+            </div>
+
+            <div class="mt-5">
+                <h3 class="font-bold">Opens a pull request</h3>
+                <p class="mt-1 text-ink-soft first-letter:uppercase" x-text="prompt?.opens_pr"></p>
+            </div>
+        </div>
+
+        <div class="rounded-lg border-2 border-ink bg-sheet p-6 sm:p-8">
+            <h2 class="font-display text-2xl">Before you copy</h2>
+
+            <dl class="mt-5 grid grid-cols-2 gap-4">
+                <div>
+                    <dt class="text-sm text-ink-soft">Tokens <span class="rounded bg-ink/8 px-1.5 text-xs">estimate</span></dt>
+                    <dd class="font-bold" x-text="prompt?.tokens"></dd>
+                </div>
+                <div>
+                    <dt class="text-sm text-ink-soft">Time</dt>
+                    <dd class="font-bold" x-text="prompt?.time"></dd>
+                </div>
+            </dl>
+
+            <div class="mt-5">
+                <h3 class="text-sm text-ink-soft">You need</h3>
+                <ul class="mt-1.5 grid gap-1">
+                    <template x-for="requirement in prompt?.requires ?? []" :key="requirement">
+                        <li class="flex gap-2"><span aria-hidden="true" class="text-red">&lt;3</span><span x-text="requirement"></span></li>
+                    </template>
+                </ul>
+                <a href="https://trailhead-labs.github.io/nativephp-review-donations/setup" class="mt-2 inline-block text-sm underline decoration-red underline-offset-4">Set up your machine</a>
+            </div>
+
+            <form class="mt-6 grid gap-5 border-t border-rule pt-6" @submit.prevent="copy()">
+                <div>
+                    <label for="handle" class="font-bold">Your GitHub handle</label>
+                    <input id="handle" x-model="handle" autocomplete="username" spellcheck="false" placeholder="octocat"
+                           class="mt-1.5 w-full rounded-md border-2 border-rule bg-paper px-3 py-2 placeholder:text-ink-soft/60 focus:border-ink focus:outline-none">
+                    <p class="mt-1 text-sm text-ink-soft">Used for credit, and so your agent skips your own issues.</p>
+                </div>
+
+                <fieldset x-show="onDevice">
+                    <legend class="font-bold">I can run</legend>
+                    <div class="mt-1.5 flex gap-5">
+                        <label class="flex items-center gap-2"><input type="checkbox" value="android" x-model="platforms" class="size-4 accent-red">Android</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" value="ios" x-model="platforms" class="size-4 accent-red">iOS <span class="text-sm text-ink-soft">(macOS)</span></label>
+                    </div>
+                </fieldset>
+
+                <div x-show="level === 'adaptive'">
+                    <label for="ceiling" class="font-bold">Never go above</label>
+                    <select id="ceiling" x-model="ceiling" class="mt-1.5 w-full rounded-md border-2 border-rule bg-paper px-3 py-2 focus:border-ink focus:outline-none">
+                        <option value="quick">Quick</option>
+                        <option value="thorough">Thorough</option>
+                        <option value="deep">Deep</option>
+                    </select>
+                </div>
+
+                <fieldset>
+                    <legend class="font-bold">Before posting</legend>
+                    <div class="mt-1.5 grid gap-1">
+                        <label class="flex items-center gap-2"><input type="radio" value="confirm" x-model="postMode" class="size-4 accent-red">Show me first</label>
+                        <label class="flex items-center gap-2"><input type="radio" value="unattended" x-model="postMode" class="size-4 accent-red">Post without asking</label>
+                    </div>
+                </fieldset>
+
+                <div>
+                    <label for="item" class="font-bold">A specific item <span class="font-normal text-ink-soft">(optional)</span></label>
+                    <input id="item" x-model="item" spellcheck="false" placeholder="mobile-air#489"
+                           class="mt-1.5 w-full rounded-md border-2 border-rule bg-paper px-3 py-2 placeholder:text-ink-soft/60 focus:border-ink focus:outline-none">
+                    <p class="mt-1 text-sm text-ink-soft">Leave empty and your agent picks one.</p>
+                </div>
+
+                <div class="relative">
+                    <button type="submit" :aria-disabled="!!blocker"
+                            class="w-full rounded-lg bg-red px-5 py-4 text-lg font-bold text-on-red transition-colors hover:bg-red-ink aria-disabled:cursor-not-allowed aria-disabled:bg-rule aria-disabled:text-ink-soft">
+                        Copy the prompt
+                    </button>
+
+                    <svg class="pointer-events-none postmark-drop absolute -top-10 -right-6 w-40 text-ink opacity-85" x-show="copied" x-cloak="x-cloak" viewBox="0 0 260 120" fill="none" aria-hidden="true">
+    <defs>
+        <path id="postmark-ring" d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0" />
+    </defs>
+    <g stroke="currentColor" stroke-width="2.5">
+        <circle cx="60" cy="60" r="56" />
+        <circle cx="60" cy="60" r="32" />
+    </g>
+    <g stroke="currentColor" stroke-width="2.5" stroke-opacity="1">
+                    <path d="M126 36 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 50 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 64 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 78 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+                    <path d="M126 92 q 16 -8 32 0 t 32 0 t 32 0 t 32 0" />
+            </g>
+    <text fill="currentColor" font-size="11.5" font-weight="700" letter-spacing="2.4" class="font-sans uppercase">
+        <textPath href="#postmark-ring" startOffset="0">Copied, thank you</textPath>
+    </text>
+    <text x="60" y="58" fill="currentColor" font-size="13" font-weight="700" text-anchor="middle" class="font-sans">with</text>
+    <text x="60" y="74" fill="currentColor" font-size="13" font-weight="700" text-anchor="middle" class="font-sans">love</text>
+</svg>
+                </div>
+
+                <p x-show="blocker" class="-mt-2 text-sm text-ink-soft" x-text="blocker"></p>
+                <p x-show="copied" class="-mt-2" role="status">
+                    <strong>Copied.</strong> <span x-text="copied && `${copied.words} words.`"></span> <span x-text="copied?.paste"></span>
+                </p>
+                <p x-show="failure" class="-mt-2 text-red-ink" role="alert" x-text="failure"></p>
+                <p x-show="catalog.agents[agent].caveat" class="-mt-2 text-sm text-ink-soft" x-text="catalog.agents[agent].caveat"></p>
+            </form>
+
+            <details class="mt-6 border-t border-rule pt-4" @toggle="showPreview($el.open)">
+                <summary class="cursor-pointer font-bold">Preview the prompt</summary>
+                <pre class="mt-3 max-h-96 overflow-auto rounded-md bg-paper p-4 font-mono text-[13px] leading-relaxed whitespace-pre-wrap" x-text="preview || 'Loading…'"></pre>
+            </details>
+
+            <div x-data="selfCheck({ promptBase: 'https:\/\/trailhead-labs.github.io\/nativephp-review-donations\/prompts' })" class="mt-4 text-sm">
+                <button type="button" class="underline decoration-red underline-offset-4" @click="copy(track, onDevice ? platformSetting : 'none')">Copy the self check on its own</button>
+                <span x-show="copied" class="ml-1 text-ink-soft">Copied. It claims nothing and posts nothing.</span>
+                <span x-show="failure" class="ml-1 text-red-ink" x-text="failure"></span>
+            </div>
+        </div>
+    </section>
+</div>
+        </section>
+    </div>
+        </main>
+
+        <footer class="mt-24">
+            <div class="airmail-strip"></div>
+
+            <div class="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-[1fr_auto]">
+                <div class="max-w-[46ch]">
+                    <p class="font-display text-2xl leading-snug">Open source runs on small kindnesses. This one fits in your clipboard.</p>
+                    <p class="mt-4 text-sm text-ink-soft">Not affiliated with any AI vendor. Run by the NativePHP community.</p>
+                </div>
+
+                <nav aria-label="More about Review Donations">
+                    <ul class="grid gap-2 text-ink-soft">
+                                                    <li><a class="underline decoration-rule underline-offset-4 hover:text-ink hover:decoration-red" href="https://trailhead-labs.github.io/nativephp-review-donations/how-it-works">How it works</a></li>
+                                                    <li><a class="underline decoration-rule underline-offset-4 hover:text-ink hover:decoration-red" href="https://trailhead-labs.github.io/nativephp-review-donations/setup">Set up your machine</a></li>
+                                                    <li><a class="underline decoration-rule underline-offset-4 hover:text-ink hover:decoration-red" href="https://trailhead-labs.github.io/nativephp-review-donations/maintainers">For maintainers</a></li>
+                                                    <li><a class="underline decoration-rule underline-offset-4 hover:text-ink hover:decoration-red" href="https://trailhead-labs.github.io/nativephp-review-donations/faq">Questions</a></li>
+                                            </ul>
+                </nav>
+            </div>
+        </footer>
+    </body>
+</html>

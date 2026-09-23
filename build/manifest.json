@@ -1,0 +1,69 @@
+{
+  "_atkinson-hyperlegible-mono-400-normal-CmMGer93.woff2": {
+    "file": "assets/atkinson-hyperlegible-mono-400-normal-CmMGer93.woff2",
+    "src": "_atkinson-hyperlegible-mono-400-normal-CmMGer93.woff2"
+  },
+  "_atkinson-hyperlegible-mono-400-normal-Cmjm2dBj.woff": {
+    "file": "assets/atkinson-hyperlegible-mono-400-normal-Cmjm2dBj.woff",
+    "src": "_atkinson-hyperlegible-mono-400-normal-Cmjm2dBj.woff"
+  },
+  "_atkinson-hyperlegible-next-400-italic-C-uEjDrs.woff": {
+    "file": "assets/atkinson-hyperlegible-next-400-italic-C-uEjDrs.woff",
+    "src": "_atkinson-hyperlegible-next-400-italic-C-uEjDrs.woff"
+  },
+  "_atkinson-hyperlegible-next-400-italic-DZBmTazM.woff2": {
+    "file": "assets/atkinson-hyperlegible-next-400-italic-DZBmTazM.woff2",
+    "src": "_atkinson-hyperlegible-next-400-italic-DZBmTazM.woff2"
+  },
+  "_atkinson-hyperlegible-next-400-normal-DPp7N0cD.woff": {
+    "file": "assets/atkinson-hyperlegible-next-400-normal-DPp7N0cD.woff",
+    "src": "_atkinson-hyperlegible-next-400-normal-DPp7N0cD.woff"
+  },
+  "_atkinson-hyperlegible-next-400-normal-FfmJh7DR.woff2": {
+    "file": "assets/atkinson-hyperlegible-next-400-normal-FfmJh7DR.woff2",
+    "src": "_atkinson-hyperlegible-next-400-normal-FfmJh7DR.woff2"
+  },
+  "_atkinson-hyperlegible-next-700-italic-ByvmSGPy.woff2": {
+    "file": "assets/atkinson-hyperlegible-next-700-italic-ByvmSGPy.woff2",
+    "src": "_atkinson-hyperlegible-next-700-italic-ByvmSGPy.woff2"
+  },
+  "_atkinson-hyperlegible-next-700-italic-DbbrSpud.woff": {
+    "file": "assets/atkinson-hyperlegible-next-700-italic-DbbrSpud.woff",
+    "src": "_atkinson-hyperlegible-next-700-italic-DbbrSpud.woff"
+  },
+  "_atkinson-hyperlegible-next-700-normal-C2qZD_Q9.woff": {
+    "file": "assets/atkinson-hyperlegible-next-700-normal-C2qZD_Q9.woff",
+    "src": "_atkinson-hyperlegible-next-700-normal-C2qZD_Q9.woff"
+  },
+  "_atkinson-hyperlegible-next-700-normal-Dpiyiu63.woff2": {
+    "file": "assets/atkinson-hyperlegible-next-700-normal-Dpiyiu63.woff2",
+    "src": "_atkinson-hyperlegible-next-700-normal-Dpiyiu63.woff2"
+  },
+  "_caprasimo-400-normal-CPOhBPz8.woff": {
+    "file": "assets/caprasimo-400-normal-CPOhBPz8.woff",
+    "src": "_caprasimo-400-normal-CPOhBPz8.woff"
+  },
+  "_caprasimo-400-normal-u3avbpQ7.woff2": {
+    "file": "assets/caprasimo-400-normal-u3avbpQ7.woff2",
+    "src": "_caprasimo-400-normal-u3avbpQ7.woff2"
+  },
+  "_fonts-Dl83k44O.css": {
+    "file": "assets/fonts-Dl83k44O.css",
+    "src": "_fonts-Dl83k44O.css"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-DF86qKsu.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-C61MnPeu.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  }
+}

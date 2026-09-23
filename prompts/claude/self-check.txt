@@ -1,0 +1,52 @@
+# Review Donations: check my setup
+
+You are checking whether this machine is ready to donate work to NativePHP through Review Donations. Do not clone anything, claim anything or post anything. Only run the commands below and report.
+
+```
+TRACKS    = {{donor.tracks}}       # which tracks the donor wants to run
+PLATFORMS = {{donor.platforms}}
+```
+
+## Step 0: self check
+
+Before anything else, check the tools this track needs and print a table of what you found. Run each command, do not assume.
+
+Every track:
+
+```
+git --version
+gh --version && gh auth status
+php -v
+composer --version
+df -h ~
+```
+
+Prove tracks, add for Android:
+
+```
+echo "$ANDROID_HOME" ; ls "$ANDROID_HOME/emulator/emulator" "$ANDROID_HOME/platform-tools/adb"
+"$ANDROID_HOME/emulator/emulator" -list-avds
+java -version        # 17 expected
+```
+
+Prove tracks, add for iOS (macOS only):
+
+```
+xcodebuild -version
+xcrun simctl list runtimes | grep -i ios
+xcrun simctl list devices available | grep -i iphone | head -5
+pod --version
+```
+
+If `ANDROID_HOME` is empty, check `~/Library/Android/sdk` (macOS), `~/Android/Sdk` (Linux) and `%LOCALAPPDATA%\Android\Sdk` (Windows) before calling it missing.
+
+Rules for step 0:
+
+- If `gh auth status` fails, stop and tell the donor to run `gh auth login`.
+- If a prove track's requirements are missing for every platform in `PLATFORMS`, stop and point the donor to the setup page. If one platform works, continue with that one and say so.
+- Never install system software (SDKs, Xcode components, Java, Homebrew packages) without the donor saying yes in this conversation.
+- If less than 5 GB is free (30 GB for prove tracks), stop and say so.
+
+If the donor runs you in a sandbox that blocks network or writes outside the folder, say which command failed and stop. Do not try to work around the sandbox.
+
+Finish with a table: each requirement, found or missing, and the version where relevant. Then one line per track in `TRACKS`: ready, ready for one platform only, or not ready, with the first thing to fix. For anything missing, link the setup page (https://trailhead-labs.github.io/nativephp-review-donations/setup). Do not install anything.

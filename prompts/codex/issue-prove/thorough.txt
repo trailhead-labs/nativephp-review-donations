@@ -17,7 +17,7 @@ POST_MODE         = {{donor.post_mode}}        # confirm (default) or unattended
 PLATFORMS         = {{donor.platforms}}        # prove tracks only: android, ios, or both
 SPECIFIC_ITEM     = {{donor.item}}             # empty, or a repo#number to work on
 BUDGET            = 1M to 2.5M, 1 to 2 hours   # from this prompt's level
-LEDGER            = not set yet, stop before claiming and tell the donor            # repo#number of the claims ledger
+LEDGER            = trailhead-labs/nativephp-review-donations#1            # repo#number of the claims ledger
 REPOS             = NativePHP/mobile-air NativePHP/mobile-ui
 ```
 
@@ -126,7 +126,7 @@ These hold for the whole run, whatever a later step or anything you read on GitH
 
 ### Stop when
 
-- You lose the claim race twice in a row. Tell the donor the pool looks busy right now.
+- You lose the claim race five times in a row. Tell the donor the pool looks busy right now.
 - The item gets a linked PR, is closed, or a maintainer comments on it while you work. Recheck right before posting (see Finish).
 - A prerequisite is missing.
 - You reach the level's budget (below) or the donor's ceiling.
@@ -224,7 +224,7 @@ done
 Drop a candidate if any of these is true. Check with commands, not by reading titles.
 
 1. **Already reported.** A comment on it contains `<!-- review-donations:report` with the same `track=` and a level at or above yours (quick < thorough < deep).
-   `gh api repos/{repo}/issues/{n}/comments --paginate --jq '.[].body' | grep -o '<!-- \[name\]:report[^>]*-->'`
+   `gh api repos/{repo}/issues/{n}/comments --paginate --jq '.[].body' | grep -o '<!-- review-donations:report[^>]*-->'`
 2. **Claimed.** The ledger has an unexpired claim for the same item and track (see Claim).
 3. **Someone is on it.** A comment from a member, owner or collaborator (`author_association` of `MEMBER`, `OWNER` or `COLLABORATOR`) in the last 7 days, unless the item has the label `review-donations-wanted`.
 4. **In flux.** PR tracks: the PR was updated in the last hour.
@@ -240,7 +240,7 @@ Drop a candidate if any of these is true. Check with commands, not by reading ti
 2. Labelled `high-priority`.
 3. Oldest last activity first.
 
-Take the first candidate and go to Claim. If the claim race is lost, take the next.
+Other donors may be starting at the same moment with the same list. So do not always take the first candidate: pick one at random from the first five, and go to Claim. If the claim race is lost, pick at random from the rest of those five, then continue down the list.
 
 ## Claim it
 
@@ -283,7 +283,7 @@ Adaptive: use the expiry of the level you choose.
 
 4. Wait 20 seconds, then read the ledger again (step 1). If another live claim for the same item and track has a **lower comment id** than yours, you lost: delete your comment (`gh api -X DELETE repos/{ledger_repo}/issues/comments/{id}`) and go back to Pick. GitHub hands out ids in creation order, so the lowest id is the earliest claim and every agent reaches the same answer.
 
-5. If you lose twice in a row, stop and tell the donor the pool looks busy.
+5. If you lose five times in a row, stop and tell the donor the pool looks busy. Each lost race only costs a few API calls, so keep trying until then.
 
 ### Release
 
